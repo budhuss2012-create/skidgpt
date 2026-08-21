@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,14 +8,15 @@
 <style>
 :root {
     --bg: #07080d;
-    --panel: rgba(16, 18, 28, 0.78);
-    --panel-2: rgba(25, 28, 42, 0.8);
-    --border: rgba(255,255,255,0.09);
+    --panel: rgba(16,18,28,.82);
+    --panel2: rgba(25,28,42,.86);
+    --border: rgba(255,255,255,.09);
     --text: #f7f8ff;
     --muted: #969bb0;
     --accent: #7c5cff;
-    --accent-2: #00d9ff;
+    --accent2: #00d9ff;
     --danger: #ff5577;
+    --success: #42f58d;
 }
 
 * {
@@ -29,7 +29,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     color: var(--text);
     background: var(--bg);
 }
@@ -39,17 +39,17 @@ body::before {
     position: fixed;
     inset: -30%;
     background:
-        radial-gradient(circle at 20% 20%, rgba(124,92,255,.20), transparent 28%),
-        radial-gradient(circle at 80% 30%, rgba(0,217,255,.13), transparent 25%),
-        radial-gradient(circle at 50% 90%, rgba(255,70,170,.10), transparent 30%);
+        radial-gradient(circle at 20% 20%,rgba(124,92,255,.20),transparent 28%),
+        radial-gradient(circle at 80% 30%,rgba(0,217,255,.13),transparent 25%),
+        radial-gradient(circle at 50% 90%,rgba(255,70,170,.10),transparent 30%);
     filter: blur(60px);
     animation: backgroundMove 12s ease-in-out infinite alternate;
     pointer-events: none;
 }
 
 @keyframes backgroundMove {
-    from { transform: translate3d(-2%, -1%, 0) scale(1); }
-    to { transform: translate3d(2%, 2%, 0) scale(1.08); }
+    from { transform: translate3d(-2%,-1%,0) scale(1); }
+    to { transform: translate3d(2%,2%,0) scale(1.08); }
 }
 
 button,
@@ -74,7 +74,7 @@ button {
     width: 285px;
     height: 100%;
     padding: 18px;
-    background: rgba(8, 9, 15, 0.78);
+    background: rgba(8,9,15,.78);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border-right: 1px solid var(--border);
@@ -96,7 +96,7 @@ button {
     border-radius: 14px;
     display: grid;
     place-items: center;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    background: linear-gradient(135deg,var(--accent),var(--accent2));
     box-shadow: 0 0 30px rgba(124,92,255,.35);
     font-size: 20px;
     font-weight: 900;
@@ -114,7 +114,7 @@ button {
 
 .new-chat {
     border: 1px solid rgba(255,255,255,.12);
-    background: linear-gradient(135deg, rgba(124,92,255,.20), rgba(0,217,255,.08));
+    background: linear-gradient(135deg,rgba(124,92,255,.20),rgba(0,217,255,.08));
     color: white;
     border-radius: 14px;
     padding: 13px 15px;
@@ -219,7 +219,6 @@ button {
     border-bottom: 1px solid var(--border);
     background: rgba(7,8,13,.48);
     backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
 }
 
 .model {
@@ -232,8 +231,8 @@ button {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #42f58d;
-    box-shadow: 0 0 12px #42f58d;
+    background: var(--success);
+    box-shadow: 0 0 12px var(--success);
 }
 
 .model strong {
@@ -264,7 +263,7 @@ button {
 }
 
 .messages-inner {
-    width: min(900px, 100%);
+    width: min(900px,100%);
     margin: auto;
 }
 
@@ -285,7 +284,7 @@ button {
     place-items: center;
     font-size: 35px;
     font-weight: 900;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    background: linear-gradient(135deg,var(--accent),var(--accent2));
     box-shadow:
         0 0 40px rgba(124,92,255,.25),
         0 0 100px rgba(0,217,255,.08);
@@ -293,17 +292,19 @@ button {
 }
 
 @keyframes orbFloat {
-    50% { transform: translateY(-8px) rotate(2deg); }
+    50% {
+        transform: translateY(-8px) rotate(2deg);
+    }
 }
 
 .welcome h1 {
-    font-size: clamp(32px, 5vw, 58px);
+    font-size: clamp(32px,5vw,58px);
     margin: 25px 0 10px;
     letter-spacing: -.045em;
 }
 
 .gradient-text {
-    background: linear-gradient(90deg, #fff, #a996ff, #67eaff);
+    background: linear-gradient(90deg,#fff,#a996ff,#67eaff);
     -webkit-background-clip: text;
     color: transparent;
 }
@@ -316,9 +317,9 @@ button {
 
 .cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3,1fr);
     gap: 10px;
-    width: min(760px, 100%);
+    width: min(760px,100%);
     margin-top: 25px;
 }
 
@@ -362,6 +363,7 @@ button {
         opacity: 0;
         transform: translateY(8px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -381,17 +383,17 @@ button {
 }
 
 .ai .avatar {
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    background: linear-gradient(135deg,var(--accent),var(--accent2));
 }
 
 .content {
     min-width: 0;
-    max-width: 82%;
+    max-width: 88%;
 }
 
 .user .content {
     margin-left: auto;
-    background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(124,92,255,.10));
+    background: linear-gradient(135deg,rgba(124,92,255,.22),rgba(124,92,255,.10));
     border: 1px solid rgba(124,92,255,.20);
     padding: 12px 15px;
     border-radius: 16px 5px 16px 16px;
@@ -408,32 +410,173 @@ button {
     overflow-wrap: anywhere;
 }
 
+/* GAME CHOICE */
+
+.game-choice {
+    margin-top: 12px;
+    padding: 16px;
+    border: 1px solid rgba(124,92,255,.25);
+    border-radius: 18px;
+    background: linear-gradient(
+        135deg,
+        rgba(124,92,255,.12),
+        rgba(0,217,255,.05)
+    );
+}
+
+.game-choice-title {
+    font-weight: 800;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.game-choice-subtitle {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 13px;
+}
+
+.game-choice-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.game-choice-buttons button {
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 11px;
+    padding: 10px 13px;
+    color: white;
+    background: rgba(255,255,255,.05);
+    transition: .2s;
+}
+
+.game-choice-buttons button:hover {
+    transform: translateY(-2px);
+    border-color: rgba(124,92,255,.5);
+    background: rgba(124,92,255,.14);
+}
+
+.game-choice-buttons .primary {
+    background: linear-gradient(135deg,var(--accent),var(--accent2));
+    border: 0;
+}
+
+/* CODE */
+
 .code-block {
     margin-top: 12px;
-    padding: 15px;
     background: #05060a;
     border: 1px solid var(--border);
     border-radius: 13px;
-    overflow-x: auto;
+    overflow: hidden;
     position: relative;
 }
 
-.code-block code {
-    font-family: Consolas, monospace;
-    font-size: 12px;
-    line-height: 1.6;
+.code-header {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px 0 14px;
+    border-bottom: 1px solid var(--border);
+    color: #9298ad;
+    font-size: 11px;
 }
 
-.copy-btn {
-    position: absolute;
-    right: 8px;
-    top: 8px;
+.code-header button {
     border: 1px solid var(--border);
     background: rgba(255,255,255,.06);
     color: white;
     border-radius: 8px;
-    padding: 5px 8px;
+    padding: 5px 9px;
     font-size: 10px;
+}
+
+.code-block pre {
+    margin: 0;
+    padding: 15px;
+    overflow-x: auto;
+}
+
+.code-block code {
+    font-family: Consolas,Monaco,monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre;
+}
+
+/* GAME PLAYER */
+
+.game-container {
+    margin-top: 14px;
+    border: 1px solid rgba(124,92,255,.25);
+    border-radius: 18px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 20px 70px rgba(0,0,0,.35);
+}
+
+.game-toolbar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px 0 14px;
+    background: rgba(18,20,31,.95);
+    border-bottom: 1px solid var(--border);
+}
+
+.game-toolbar strong {
+    font-size: 12px;
+}
+
+.game-toolbar button {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.06);
+    color: white;
+    border-radius: 8px;
+    padding: 5px 9px;
+    font-size: 10px;
+}
+
+.game-frame {
+    width: 100%;
+    height: 560px;
+    border: 0;
+    display: block;
+    background: #000;
+}
+
+/* TYPING */
+
+.typing {
+    display: inline-flex;
+    gap: 4px;
+    padding: 10px 0;
+}
+
+.typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a9b0c8;
+    animation: typing 1s infinite;
+}
+
+.typing span:nth-child(2) {
+    animation-delay: .15s;
+}
+
+.typing span:nth-child(3) {
+    animation-delay: .3s;
+}
+
+@keyframes typing {
+    50% {
+        transform: translateY(-4px);
+        opacity: .45;
+    }
 }
 
 /* COMPOSER */
@@ -444,11 +587,14 @@ button {
     left: 285px;
     right: 0;
     padding: 20px 20px 22px;
-    background: linear-gradient(transparent, rgba(7,8,13,.95) 35%);
+    background: linear-gradient(
+        transparent,
+        rgba(7,8,13,.95) 35%
+    );
 }
 
 .composer {
-    width: min(900px, 100%);
+    width: min(900px,100%);
     margin: auto;
     display: flex;
     align-items: flex-end;
@@ -484,7 +630,7 @@ textarea::placeholder {
     border: 0;
     border-radius: 13px;
     color: white;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    background: linear-gradient(135deg,var(--accent),var(--accent2));
     font-weight: 900;
     box-shadow: 0 0 25px rgba(124,92,255,.22);
     transition: .2s;
@@ -498,36 +644,13 @@ textarea::placeholder {
     opacity: .45;
 }
 
-/* TYPING */
-
-.typing {
-    display: inline-flex;
-    gap: 4px;
-    padding: 10px 0;
-}
-
-.typing span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #a9b0c8;
-    animation: typing 1s infinite;
-}
-
-.typing span:nth-child(2) { animation-delay: .15s; }
-.typing span:nth-child(3) { animation-delay: .3s; }
-
-@keyframes typing {
-    50% { transform: translateY(-4px); opacity: .45; }
-}
-
 /* MOBILE */
 
 .mobile-menu {
     display: none;
 }
 
-@media (max-width: 760px) {
+@media (max-width:760px) {
 
     .sidebar {
         position: fixed;
@@ -578,7 +701,11 @@ textarea::placeholder {
     }
 
     .content {
-        max-width: 90%;
+        max-width: 94%;
+    }
+
+    .game-frame {
+        height: 450px;
     }
 }
 </style>
@@ -592,6 +719,7 @@ textarea::placeholder {
 
         <div class="brand">
             <div class="logo">S</div>
+
             <div class="brand-text">
                 <strong>SkidGPT</strong>
                 <span>AI • Game Creator</span>
@@ -602,7 +730,9 @@ textarea::placeholder {
             ＋ New Chat
         </button>
 
-        <div class="section-title">Recent conversations</div>
+        <div class="section-title">
+            Recent conversations
+        </div>
 
         <div class="chat-list" id="chatList"></div>
 
@@ -613,7 +743,12 @@ textarea::placeholder {
         <header class="topbar">
 
             <div class="model">
-                <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+                <button
+                    class="mobile-menu"
+                    onclick="toggleSidebar()">
+                    ☰
+                </button>
 
                 <span class="status-dot"></span>
 
@@ -621,62 +756,31 @@ textarea::placeholder {
                     <strong>SkidGPT</strong>
                     <span>Online</span>
                 </div>
+
             </div>
 
             <div class="top-actions">
-                <button onclick="newChat()">New</button>
+                <button onclick="newChat()">
+                    New
+                </button>
             </div>
 
         </header>
 
         <section class="messages" id="messages">
 
-            <div class="messages-inner" id="messagesInner">
-
-                <div class="welcome" id="welcome">
-
-                    <div class="welcome-orb">S</div>
-
-                    <h1>
-                        Meet <span class="gradient-text">SkidGPT</span>
-                    </h1>
-
-                    <p>
-                        Your AI assistant for questions, coding, ideas,
-                        and creating complete browser games.
-                    </p>
-
-                    <div class="cards">
-
-                        <button class="suggestion"
-                            onclick="useSuggestion('Make me a polished horror game set inside an abandoned facility.')">
-                            <strong>🎮 Create a game</strong>
-                            <span>Build a complete playable game</span>
-                        </button>
-
-                        <button class="suggestion"
-                            onclick="useSuggestion('Help me make my Unity game better.')">
-                            <strong>🛠️ Help with code</strong>
-                            <span>Get help with your projects</span>
-                        </button>
-
-                        <button class="suggestion"
-                            onclick="useSuggestion('Give me 5 creative game ideas.')">
-                            <strong>💡 Brainstorm</strong>
-                            <span>Turn ideas into something awesome</span>
-                        </button>
-
-                    </div>
-
-                </div>
-
+            <div
+                class="messages-inner"
+                id="messagesInner">
             </div>
 
         </section>
 
         <div class="composer-wrap">
 
-            <form class="composer" id="chatForm">
+            <form
+                class="composer"
+                id="chatForm">
 
                 <textarea
                     id="input"
@@ -685,7 +789,10 @@ textarea::placeholder {
                     autocomplete="off"
                 ></textarea>
 
-                <button class="send" id="send" type="submit">
+                <button
+                    class="send"
+                    id="send"
+                    type="submit">
                     ↑
                 </button>
 
@@ -711,12 +818,20 @@ let conversations = JSON.parse(
 
 let currentConversation = null;
 
+/* -------------------------
+   STORAGE
+------------------------- */
+
 function saveConversations() {
     localStorage.setItem(
         "skidgpt_conversations",
         JSON.stringify(conversations)
     );
 }
+
+/* -------------------------
+   CONVERSATIONS
+------------------------- */
 
 function createConversation() {
     return {
@@ -729,13 +844,6 @@ function createConversation() {
 }
 
 function newChat() {
-
-    if (
-        currentConversation &&
-        currentConversation.messages.length === 0
-    ) {
-        return;
-    }
 
     currentConversation = createConversation();
 
@@ -753,9 +861,10 @@ function newChat() {
 
 function loadConversation(id) {
 
-    const conversation = conversations.find(
-        chat => chat.id === id
-    );
+    const conversation =
+        conversations.find(
+            chat => chat.id === id
+        );
 
     if (!conversation) return;
 
@@ -767,30 +876,32 @@ function loadConversation(id) {
     sidebar.classList.remove("open");
 }
 
-function deleteConversation(id, event) {
+function deleteConversation(id,event) {
 
     event.stopPropagation();
 
-    conversations = conversations.filter(
-        chat => chat.id !== id
-    );
+    conversations =
+        conversations.filter(
+            chat => chat.id !== id
+        );
 
     if (
         currentConversation &&
         currentConversation.id === id
     ) {
         currentConversation = null;
-        renderCurrentChat();
     }
 
     saveConversations();
+
     renderChatList();
+    renderCurrentChat();
 }
 
 function generateTitle(text) {
 
     let clean = text
-        .replace(/\s+/g, " ")
+        .replace(/\s+/g," ")
         .trim();
 
     if (!clean) {
@@ -798,11 +909,16 @@ function generateTitle(text) {
     }
 
     if (clean.length > 38) {
-        clean = clean.substring(0, 38) + "...";
+        clean =
+            clean.substring(0,38) + "...";
     }
 
     return clean;
 }
+
+/* -------------------------
+   CHAT LIST
+------------------------- */
 
 function renderChatList() {
 
@@ -810,7 +926,8 @@ function renderChatList() {
 
     conversations.forEach(conversation => {
 
-        const item = document.createElement("div");
+        const item =
+            document.createElement("div");
 
         item.className =
             "chat-item " +
@@ -824,23 +941,34 @@ function renderChatList() {
         item.onclick = () =>
             loadConversation(conversation.id);
 
-        const title = document.createElement("div");
+        const title =
+            document.createElement("div");
 
         title.className = "chat-title";
-        title.textContent = conversation.title;
+        title.textContent =
+            conversation.title;
 
-        const preview = document.createElement("div");
+        const preview =
+            document.createElement("div");
 
         preview.className = "chat-preview";
-        preview.textContent = conversation.preview;
+        preview.textContent =
+            conversation.preview;
 
-        const deleteButton = document.createElement("button");
+        const deleteButton =
+            document.createElement("button");
 
-        deleteButton.className = "delete-chat";
+        deleteButton.className =
+            "delete-chat";
+
         deleteButton.textContent = "×";
 
-        deleteButton.onclick = event =>
-            deleteConversation(conversation.id, event);
+        deleteButton.onclick =
+            event =>
+                deleteConversation(
+                    conversation.id,
+                    event
+                );
 
         item.appendChild(title);
         item.appendChild(preview);
@@ -850,6 +978,92 @@ function renderChatList() {
     });
 }
 
+/* -------------------------
+   WELCOME SCREEN
+------------------------- */
+
+function welcomeHTML() {
+
+    return `
+        <div class="welcome">
+
+            <div class="welcome-orb">
+                S
+            </div>
+
+            <h1>
+                Meet
+                <span class="gradient-text">
+                    SkidGPT
+                </span>
+            </h1>
+
+            <p>
+                Your AI assistant for questions,
+                coding, ideas, and creating
+                complete browser games.
+            </p>
+
+            <div class="cards">
+
+                <button
+                    class="suggestion"
+                    onclick="useSuggestion(
+                        'Make me a polished horror game set inside an abandoned facility.'
+                    )">
+
+                    <strong>
+                        🎮 Create a game
+                    </strong>
+
+                    <span>
+                        Build a complete playable game
+                    </span>
+
+                </button>
+
+                <button
+                    class="suggestion"
+                    onclick="useSuggestion(
+                        'Help me make my Unity game better.'
+                    )">
+
+                    <strong>
+                        🛠️ Help with code
+                    </strong>
+
+                    <span>
+                        Get help with your projects
+                    </span>
+
+                </button>
+
+                <button
+                    class="suggestion"
+                    onclick="useSuggestion(
+                        'Give me 5 creative game ideas.'
+                    )">
+
+                    <strong>
+                        💡 Brainstorm
+                    </strong>
+
+                    <span>
+                        Turn ideas into something awesome
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+    `;
+}
+
+/* -------------------------
+   RENDER CURRENT CHAT
+------------------------- */
+
 function renderCurrentChat() {
 
     messagesInner.innerHTML = "";
@@ -858,84 +1072,82 @@ function renderCurrentChat() {
         !currentConversation ||
         currentConversation.messages.length === 0
     ) {
-        messagesInner.innerHTML = `
-            <div class="welcome" id="welcome">
-
-                <div class="welcome-orb">S</div>
-
-                <h1>
-                    Meet <span class="gradient-text">SkidGPT</span>
-                </h1>
-
-                <p>
-                    Your AI assistant for questions, coding, ideas,
-                    and creating complete browser games.
-                </p>
-
-                <div class="cards">
-
-                    <button class="suggestion"
-                        onclick="useSuggestion('Make me a polished horror game set inside an abandoned facility.')">
-                        <strong>🎮 Create a game</strong>
-                        <span>Build a complete playable game</span>
-                    </button>
-
-                    <button class="suggestion"
-                        onclick="useSuggestion('Help me make my Unity game better.')">
-                        <strong>🛠️ Help with code</strong>
-                        <span>Get help with your projects</span>
-                    </button>
-
-                    <button class="suggestion"
-                        onclick="useSuggestion('Give me 5 creative game ideas.')">
-                        <strong>💡 Brainstorm</strong>
-                        <span>Turn ideas into something awesome</span>
-                    </button>
-
-                </div>
-
-            </div>
-        `;
+        messagesInner.innerHTML =
+            welcomeHTML();
 
         return;
     }
 
-    currentConversation.messages.forEach(message => {
+    currentConversation.messages.forEach(
+        message => {
 
-        addMessageToScreen(
-            message.role,
-            message.content
-        );
-    });
+            addMessageToScreen(
+                message.role,
+                message.content,
+                message.type,
+                message.gameHTML
+            );
+
+        }
+    );
 
     scrollToBottom();
 }
 
-function addMessageToScreen(role, content) {
+/* -------------------------
+   MESSAGE DISPLAY
+------------------------- */
 
-    const message = document.createElement("div");
+function addMessageToScreen(
+    role,
+    content,
+    type = "text",
+    gameHTML = null
+) {
+
+    const message =
+        document.createElement("div");
 
     message.className =
         "message " +
-        (role === "user" ? "user" : "ai");
+        (role === "user"
+            ? "user"
+            : "ai");
 
-    const avatar = document.createElement("div");
+    const avatar =
+        document.createElement("div");
 
     avatar.className = "avatar";
-    avatar.textContent =
-        role === "user" ? "YOU" : "S";
 
-    const contentBox = document.createElement("div");
+    avatar.textContent =
+        role === "user"
+            ? "YOU"
+            : "S";
+
+    const contentBox =
+        document.createElement("div");
 
     contentBox.className = "content";
 
-    const text = document.createElement("div");
+    if (
+        role === "assistant" &&
+        type === "game"
+    ) {
 
-    text.className = "text";
+        addGameContent(
+            contentBox,
+            content,
+            gameHTML
+        );
 
-    text.textContent = content;
+    } else {
 
-    contentBox.appendChild(text);
+        addTextContent(
+            contentBox,
+            content
+        );
+
+    }
 
     message.appendChild(avatar);
     message.appendChild(contentBox);
@@ -943,12 +1155,333 @@ function addMessageToScreen(role, content) {
     messagesInner.appendChild(message);
 }
 
+/* -------------------------
+   NORMAL TEXT + CODE
+------------------------- */
+
+function addTextContent(
+    container,
+    content
+) {
+
+    const parts =
+        content.split(/```([\s\S]*?)```/g);
+
+    for (
+        let i = 0;
+        i < parts.length;
+        i++
+    ) {
+
+        const part = parts[i];
+
+        if (!part.trim()) continue;
+
+        if (i % 2 === 1) {
+
+            let code = part;
+
+            let language = "code";
+
+            const firstLine =
+                code.match(
+                    /^\s*([a-zA-Z0-9+#-]+)\s*\n/
+                );
+
+            if (firstLine) {
+
+                language =
+                    firstLine[1];
+
+                code =
+                    code.substring(
+                        firstLine[0].length
+                    );
+            }
+
+            const block =
+                document.createElement("div");
+
+            block.className =
+                "code-block";
+
+            const header =
+                document.createElement("div");
+
+            header.className =
+                "code-header";
+
+            const label =
+                document.createElement("span");
+
+            label.textContent =
+                language;
+
+            const copy =
+                document.createElement("button");
+
+            copy.textContent =
+                "📋 Copy";
+
+            copy.onclick =
+                () => copyText(
+                    code,
+                    copy
+                );
+
+            header.appendChild(label);
+            header.appendChild(copy);
+
+            const pre =
+                document.createElement("pre");
+
+            const codeElement =
+                document.createElement("code");
+
+            codeElement.textContent =
+                code.trim();
+
+            pre.appendChild(codeElement);
+
+            block.appendChild(header);
+            block.appendChild(pre);
+
+            container.appendChild(block);
+
+        } else {
+
+            const text =
+                document.createElement("div");
+
+            text.className = "text";
+
+            text.textContent =
+                part.trim();
+
+            container.appendChild(text);
+        }
+    }
+}
+
+/* -------------------------
+   GAME CONTENT
+------------------------- */
+
+function addGameContent(
+    container,
+    html,
+    playable
+) {
+
+    const title =
+        document.createElement("div");
+
+    title.className = "text";
+
+    title.textContent =
+        "🎮 Your game is ready!";
+
+    container.appendChild(title);
+
+    if (playable) {
+
+        createGamePlayer(
+            container,
+            html
+        );
+    }
+
+    if (!playable || playable === "both") {
+
+        createCodeBlock(
+            container,
+            html
+        );
+    }
+}
+
+/* -------------------------
+   GAME PLAYER
+------------------------- */
+
+function createGamePlayer(
+    container,
+    html
+) {
+
+    const gameContainer =
+        document.createElement("div");
+
+    gameContainer.className =
+        "game-container";
+
+    const toolbar =
+        document.createElement("div");
+
+    toolbar.className =
+        "game-toolbar";
+
+    const label =
+        document.createElement("strong");
+
+    label.textContent =
+        "🎮 PLAY GAME";
+
+    const reload =
+        document.createElement("button");
+
+    reload.textContent =
+        "↻ Restart";
+
+    toolbar.appendChild(label);
+    toolbar.appendChild(reload);
+
+    const frame =
+        document.createElement("iframe");
+
+    frame.className =
+        "game-frame";
+
+    frame.setAttribute(
+        "sandbox",
+        "allow-scripts allow-pointer-lock"
+    );
+
+    frame.srcdoc = html;
+
+    reload.onclick = () => {
+        frame.srcdoc = html;
+    };
+
+    gameContainer.appendChild(toolbar);
+    gameContainer.appendChild(frame);
+
+    container.appendChild(gameContainer);
+}
+
+/* -------------------------
+   CODE BLOCK
+------------------------- */
+
+function createCodeBlock(
+    container,
+    code
+) {
+
+    const block =
+        document.createElement("div");
+
+    block.className =
+        "code-block";
+
+    const header =
+        document.createElement("div");
+
+    header.className =
+        "code-header";
+
+    const label =
+        document.createElement("span");
+
+    label.textContent =
+        "HTML GAME";
+
+    const copy =
+        document.createElement("button");
+
+    copy.textContent =
+        "📋 Copy";
+
+    copy.onclick =
+        () => copyText(
+            code,
+            copy
+        );
+
+    header.appendChild(label);
+    header.appendChild(copy);
+
+    const pre =
+        document.createElement("pre");
+
+    const codeElement =
+        document.createElement("code");
+
+    codeElement.textContent =
+        code;
+
+    pre.appendChild(codeElement);
+
+    block.appendChild(header);
+    block.appendChild(pre);
+
+    container.appendChild(block);
+}
+
+/* -------------------------
+   COPY
+------------------------- */
+
+async function copyText(
+    text,
+    button
+) {
+
+    try {
+
+        await navigator.clipboard.writeText(
+            text
+        );
+
+        const old =
+            button.textContent;
+
+        button.textContent =
+            "✓ Copied!";
+
+        setTimeout(() => {
+            button.textContent = old;
+        },1500);
+
+    } catch {
+
+        const area =
+            document.createElement("textarea");
+
+        area.value = text;
+
+        document.body.appendChild(area);
+
+        area.select();
+
+        document.execCommand("copy");
+
+        area.remove();
+
+        button.textContent =
+            "✓ Copied!";
+
+        setTimeout(() => {
+            button.textContent =
+                "📋 Copy";
+        },1500);
+    }
+}
+
+/* -------------------------
+   TYPING
+------------------------- */
+
 function addTyping() {
 
-    const message = document.createElement("div");
+    const message =
+        document.createElement("div");
 
-    message.className = "message ai";
-    message.id = "typingMessage";
+    message.className =
+        "message ai";
+
+    message.id =
+        "typingMessage";
 
     message.innerHTML = `
         <div class="avatar">S</div>
@@ -972,88 +1505,181 @@ function addTyping() {
 function removeTyping() {
 
     const typing =
-        document.getElementById("typingMessage");
+        document.getElementById(
+            "typingMessage"
+        );
 
     if (typing) {
         typing.remove();
     }
 }
 
-async function sendMessage(text) {
+/* -------------------------
+   GAME DETECTION
+------------------------- */
 
-    text = text.trim();
+function looksLikeGameRequest(
+    text
+) {
 
-    if (!text) return;
+    return /\b(make|create|build|generate|design|develop)\b.{0,100}\b(game|platformer|shooter|horror|rpg|racing|clicker|pong|snake|flappy|arcade|survival)\b/i.test(text)
+        || /\b(game|platformer|shooter|horror|rpg|racing|clicker|pong|snake|flappy|arcade|survival)\b/i.test(text);
+}
 
-    if (!currentConversation) {
-        currentConversation = createConversation();
-        conversations.unshift(currentConversation);
-    }
+/* -------------------------
+   GAME CHOICE
+------------------------- */
 
-    if (
-        currentConversation.messages.length === 0
-    ) {
-        currentConversation.title =
-            generateTitle(text);
-    }
+function showGameChoice(
+    request
+) {
 
-    currentConversation.messages.push({
-        role: "user",
-        content: text
-    });
+    const message =
+        document.createElement("div");
 
-    currentConversation.preview = text;
+    message.className =
+        "message ai";
 
-    saveConversations();
+    const avatar =
+        document.createElement("div");
 
-    renderChatList();
+    avatar.className = "avatar";
+    avatar.textContent = "S";
+
+    const content =
+        document.createElement("div");
+
+    content.className = "content";
+
+    const choice =
+        document.createElement("div");
+
+    choice.className =
+        "game-choice";
+
+    choice.innerHTML = `
+        <div class="game-choice-title">
+            🎮 Game request detected
+        </div>
+
+        <div class="game-choice-subtitle">
+            How do you want SkidGPT to create it?
+        </div>
+
+        <div class="game-choice-buttons">
+
+            <button
+                class="primary"
+                onclick='chooseGameMode("play", ${JSON.stringify(request)})'>
+                🎮 Play Game
+            </button>
+
+            <button
+                onclick='chooseGameMode("script", ${JSON.stringify(request)})'>
+                💻 Get Script
+            </button>
+
+            <button
+                onclick='chooseGameMode("both", ${JSON.stringify(request)})'>
+                🚀 Both
+            </button>
+
+        </div>
+    `;
+
+    content.appendChild(choice);
+
+    message.appendChild(avatar);
+    message.appendChild(content);
+
+    messagesInner.appendChild(message);
+
+    scrollToBottom();
+}
+
+/* -------------------------
+   CHOOSE GAME MODE
+------------------------- */
+
+async function chooseGameMode(
+    mode,
+    request
+) {
+
+    const buttons =
+        document.querySelectorAll(
+            ".game-choice-buttons button"
+        );
+
+    buttons.forEach(
+        button =>
+            button.disabled = true
+    );
+
+    const modeNames = {
+        play: "🎮 Play Game",
+        script: "💻 Get Script",
+        both: "🚀 Both"
+    };
+
+    addUserMessageToConversation(
+        `${modeNames[mode]} — ${request}`
+    );
+
     renderCurrentChat();
 
     addTyping();
-
-    input.value = "";
-    input.style.height = "auto";
 
     sendButton.disabled = true;
 
     try {
 
-        const response = await fetch("/chat", {
+        const response =
+            await fetch("/chat", {
 
-            method: "POST",
+                method: "POST",
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-            body: JSON.stringify({
-                message: text,
-                conversation: currentConversation.messages
-            })
+                body: JSON.stringify({
+                    message: request,
+                    mode: "game",
+                    conversation:
+                        currentConversation.messages
+                })
+            });
 
-        });
-
-        const data = await response.json();
+        const data =
+            await response.json();
 
         removeTyping();
 
         if (!response.ok) {
             throw new Error(
-                data.error || "AI request failed."
+                data.error ||
+                "Game generation failed."
             );
         }
 
-        const reply =
-            data.reply ||
-            "I didn't receive a response.";
+        const html =
+            data.reply || "";
 
         currentConversation.messages.push({
             role: "assistant",
-            content: reply
+            content: html,
+            type: "game",
+            gameHTML:
+                mode === "play"
+                    ? "play"
+                    : mode === "both"
+                        ? "both"
+                        : null
         });
 
         currentConversation.preview =
-            reply.substring(0, 70);
+            "Generated a game";
 
         saveConversations();
 
@@ -1067,7 +1693,7 @@ async function sendMessage(text) {
         currentConversation.messages.push({
             role: "assistant",
             content:
-                "Sorry, something went wrong: " +
+                "Sorry, I couldn't create the game.\n\n" +
                 error.message
         });
 
@@ -1078,39 +1704,216 @@ async function sendMessage(text) {
     } finally {
 
         sendButton.disabled = false;
+
         input.focus();
     }
 }
 
-form.addEventListener("submit", event => {
+/* -------------------------
+   ADD USER MESSAGE
+------------------------- */
 
-    event.preventDefault();
+function addUserMessageToConversation(
+    text
+) {
 
-    sendMessage(input.value);
+    currentConversation.messages.push({
+        role: "user",
+        content: text,
+        type: "text"
+    });
 
-});
+    currentConversation.preview =
+        text.substring(0,70);
 
-input.addEventListener("input", () => {
+    saveConversations();
+}
 
-    input.style.height = "auto";
+/* -------------------------
+   SEND MESSAGE
+------------------------- */
 
-    input.style.height =
-        Math.min(input.scrollHeight, 180) + "px";
+async function sendMessage(
+    text
+) {
 
-});
+    text = text.trim();
 
-input.addEventListener("keydown", event => {
+    if (!text) return;
 
-    if (
-        event.key === "Enter" &&
-        !event.shiftKey
-    ) {
-        event.preventDefault();
+    if (!currentConversation) {
 
-        form.requestSubmit();
+        currentConversation =
+            createConversation();
+
+        conversations.unshift(
+            currentConversation
+        );
     }
 
-});
+    if (
+        currentConversation.messages.length === 0
+    ) {
+
+        currentConversation.title =
+            generateTitle(text);
+    }
+
+    /*
+       If this looks like a game request,
+       show the choice menu first.
+    */
+
+    if (looksLikeGameRequest(text)) {
+
+        addUserMessageToConversation(text);
+
+        renderChatList();
+        renderCurrentChat();
+
+        showGameChoice(text);
+
+        input.value = "";
+        input.style.height = "auto";
+
+        return;
+    }
+
+    addUserMessageToConversation(text);
+
+    renderChatList();
+    renderCurrentChat();
+
+    addTyping();
+
+    input.value = "";
+    input.style.height = "auto";
+
+    sendButton.disabled = true;
+
+    try {
+
+        const response =
+            await fetch("/chat", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: text,
+                    mode: "chat",
+                    conversation:
+                        currentConversation.messages
+                })
+            });
+
+        const data =
+            await response.json();
+
+        removeTyping();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ||
+                "AI request failed."
+            );
+        }
+
+        const reply =
+            data.reply ||
+            "I didn't receive a response.";
+
+        currentConversation.messages.push({
+            role: "assistant",
+            content: reply,
+            type: "text"
+        });
+
+        currentConversation.preview =
+            reply.substring(0,70);
+
+        saveConversations();
+
+        renderChatList();
+        renderCurrentChat();
+
+    } catch (error) {
+
+        removeTyping();
+
+        currentConversation.messages.push({
+            role: "assistant",
+            content:
+                "Sorry, something went wrong:\n\n" +
+                error.message,
+            type: "text"
+        });
+
+        saveConversations();
+
+        renderCurrentChat();
+
+    } finally {
+
+        sendButton.disabled = false;
+
+        input.focus();
+    }
+}
+
+/* -------------------------
+   INPUT
+------------------------- */
+
+form.addEventListener(
+    "submit",
+    event => {
+
+        event.preventDefault();
+
+        sendMessage(
+            input.value
+        );
+    }
+);
+
+input.addEventListener(
+    "input",
+    () => {
+
+        input.style.height =
+            "auto";
+
+        input.style.height =
+            Math.min(
+                input.scrollHeight,
+                180
+            ) + "px";
+    }
+);
+
+input.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+
+            event.preventDefault();
+
+            form.requestSubmit();
+        }
+    }
+);
+
+/* -------------------------
+   SUGGESTIONS
+------------------------- */
 
 function useSuggestion(text) {
 
@@ -1121,32 +1924,50 @@ function useSuggestion(text) {
     form.requestSubmit();
 }
 
+/* -------------------------
+   MOBILE SIDEBAR
+------------------------- */
+
 function toggleSidebar() {
 
-    sidebar.classList.toggle("open");
+    sidebar.classList.toggle(
+        "open"
+    );
 }
+
+/* -------------------------
+   SCROLL
+------------------------- */
 
 function scrollToBottom() {
 
     const messages =
-        document.getElementById("messages");
+        document.getElementById(
+            "messages"
+        );
 
     setTimeout(() => {
 
         messages.scrollTo({
-            top: messages.scrollHeight,
-            behavior: "smooth"
+            top:
+                messages.scrollHeight,
+            behavior:
+                "smooth"
         });
 
-    }, 30);
+    },30);
 }
+
+/* -------------------------
+   STARTUP
+------------------------- */
 
 renderChatList();
 
 if (conversations.length > 0) {
 
-    currentConversation = conversations[0];
-
+    currentConversation =
+        conversations[0];
 }
 
 renderCurrentChat();
@@ -1154,4 +1975,3 @@ renderCurrentChat();
 
 </body>
 </html>
-```
