@@ -4,10 +4,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>SkidGPT</title>
 
 <style>
+:root {
+    --bg: #07080d;
+    --panel: rgba(16, 18, 28, 0.78);
+    --panel-2: rgba(25, 28, 42, 0.8);
+    --border: rgba(255,255,255,0.09);
+    --text: #f7f8ff;
+    --muted: #969bb0;
+    --accent: #7c5cff;
+    --accent-2: #00d9ff;
+    --danger: #ff5577;
+}
 
 * {
     box-sizing: border-box;
@@ -18,129 +28,177 @@ body {
     margin: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--text);
+    background: var(--bg);
 }
 
-body {
-    background: #212121;
-    color: #ececec;
-    font-family: Arial, Helvetica, sans-serif;
-    overflow: hidden;
+body::before {
+    content: "";
+    position: fixed;
+    inset: -30%;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(124,92,255,.20), transparent 28%),
+        radial-gradient(circle at 80% 30%, rgba(0,217,255,.13), transparent 25%),
+        radial-gradient(circle at 50% 90%, rgba(255,70,170,.10), transparent 30%);
+    filter: blur(60px);
+    animation: backgroundMove 12s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes backgroundMove {
+    from { transform: translate3d(-2%, -1%, 0) scale(1); }
+    to { transform: translate3d(2%, 2%, 0) scale(1.08); }
+}
+
+button,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
 }
 
 .app {
-    width: 100%;
-    height: 100vh;
+    position: relative;
     display: flex;
+    width: 100%;
+    height: 100%;
 }
 
 /* SIDEBAR */
 
 .sidebar {
-    width: 255px;
+    width: 285px;
     height: 100%;
-    background: #171717;
-    border-right: 1px solid #303030;
+    padding: 18px;
+    background: rgba(8, 9, 15, 0.78);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 12px;
-    flex-shrink: 0;
+    z-index: 20;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 30px rgba(124,92,255,.35);
+    font-size: 20px;
+    font-weight: 900;
 }
 
-.logo-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: #303030;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-}
-
-.logo-name {
+.brand-text strong {
+    display: block;
     font-size: 17px;
-    font-weight: 700;
+}
+
+.brand-text span {
+    color: var(--muted);
+    font-size: 11px;
 }
 
 .new-chat {
-    width: 100%;
-    padding: 12px;
-    border-radius: 9px;
-    border: 1px solid #3b3b3b;
-    background: #252525;
-    color: #fff;
-    cursor: pointer;
+    border: 1px solid rgba(255,255,255,.12);
+    background: linear-gradient(135deg, rgba(124,92,255,.20), rgba(0,217,255,.08));
+    color: white;
+    border-radius: 14px;
+    padding: 13px 15px;
     text-align: left;
-    font-size: 14px;
+    font-weight: 700;
+    transition: .2s;
 }
 
 .new-chat:hover {
-    background: #303030;
+    transform: translateY(-1px);
+    border-color: rgba(124,92,255,.5);
+    box-shadow: 0 10px 35px rgba(124,92,255,.15);
 }
 
-.sidebar-title {
-    color: #777;
-    font-size: 11px;
-    font-weight: bold;
-    margin: 25px 10px 8px;
+.section-title {
+    color: #777d93;
     text-transform: uppercase;
-    letter-spacing: .5px;
+    letter-spacing: .12em;
+    font-size: 10px;
+    font-weight: 800;
+    margin: 24px 5px 10px;
 }
 
-.chat-history {
+.chat-list {
     flex: 1;
     overflow-y: auto;
+    padding-right: 3px;
 }
 
-.history-item {
-    padding: 10px;
-    margin-bottom: 3px;
-    border-radius: 8px;
-    color: #bdbdbd;
-    font-size: 13px;
+.chat-item {
+    position: relative;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    transition: .18s;
     cursor: pointer;
+}
+
+.chat-item:hover {
+    background: rgba(255,255,255,.045);
+    border-color: var(--border);
+}
+
+.chat-item.active {
+    background: rgba(124,92,255,.12);
+    border-color: rgba(124,92,255,.25);
+}
+
+.chat-title {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 22px;
+}
+
+.chat-preview {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.history-item:hover {
-    background: #252525;
-    color: white;
-}
-
-.history-item.active {
-    background: #303030;
-    color: white;
-}
-
-.sidebar-bottom {
-    border-top: 1px solid #303030;
-    padding-top: 10px;
-}
-
-.sidebar-button {
-    width: 100%;
-    padding: 10px;
-    border: none;
+.delete-chat {
+    position: absolute;
+    right: 8px;
+    top: 12px;
+    border: 0;
     background: transparent;
-    color: #aaa;
-    text-align: left;
-    border-radius: 8px;
-    cursor: pointer;
+    color: #777d93;
+    opacity: 0;
+    font-size: 13px;
 }
 
-.sidebar-button:hover {
-    background: #252525;
-    color: white;
+.chat-item:hover .delete-chat {
+    opacity: 1;
+}
+
+.delete-chat:hover {
+    color: var(--danger);
 }
 
 /* MAIN */
@@ -148,390 +206,381 @@ body {
 .main {
     flex: 1;
     min-width: 0;
-    height: 100%;
     display: flex;
     flex-direction: column;
 }
 
 .topbar {
-    height: 60px;
-    border-bottom: 1px solid #303030;
+    height: 72px;
     display: flex;
     align-items: center;
-    padding: 0 22px;
-    flex-shrink: 0;
-    background: #212121;
+    justify-content: space-between;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(7,8,13,.48);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
-.mobile-menu {
-    display: none;
+.model {
+    display: flex;
+    align-items: center;
+    gap: 9px;
 }
 
-.top-name {
-    font-size: 17px;
-    font-weight: 600;
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #42f58d;
+    box-shadow: 0 0 12px #42f58d;
 }
 
-.online {
-    margin-left: 10px;
+.model strong {
+    font-size: 14px;
+}
+
+.model span {
+    color: var(--muted);
     font-size: 11px;
-    color: #65d878;
+    margin-left: 4px;
+}
+
+.top-actions button {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.035);
+    color: #dfe2ef;
+    border-radius: 10px;
+    padding: 8px 11px;
+    margin-left: 6px;
 }
 
 /* CHAT */
 
-#messages {
+.messages {
     flex: 1;
     overflow-y: auto;
-    padding: 35px 25px 150px;
+    padding: 38px 18px 150px;
 }
 
-.conversation {
-    width: 100%;
-    max-width: 850px;
+.messages-inner {
+    width: min(900px, 100%);
     margin: auto;
 }
 
-/* WELCOME */
-
 .welcome {
-    min-height: 65vh;
+    min-height: 55vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
     text-align: center;
 }
 
-.welcome-icon {
-    width: 70px;
-    height: 70px;
-    border-radius: 20px;
-    background: #303030;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 30px rgba(0,0,0,.25);
+.welcome-orb {
+    width: 90px;
+    height: 90px;
+    border-radius: 30px;
+    display: grid;
+    place-items: center;
+    font-size: 35px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow:
+        0 0 40px rgba(124,92,255,.25),
+        0 0 100px rgba(0,217,255,.08);
+    animation: orbFloat 4s ease-in-out infinite;
+}
+
+@keyframes orbFloat {
+    50% { transform: translateY(-8px) rotate(2deg); }
 }
 
 .welcome h1 {
-    margin: 0;
-    font-size: 32px;
-    color: #fff;
+    font-size: clamp(32px, 5vw, 58px);
+    margin: 25px 0 10px;
+    letter-spacing: -.045em;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #fff, #a996ff, #67eaff);
+    -webkit-background-clip: text;
+    color: transparent;
 }
 
 .welcome p {
-    margin-top: 12px;
-    color: #888;
-    font-size: 14px;
+    color: var(--muted);
+    max-width: 580px;
+    line-height: 1.6;
 }
 
-.quick-actions {
-    display: flex;
-    gap: 8px;
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: min(760px, 100%);
     margin-top: 25px;
-    flex-wrap: wrap;
-    justify-content: center;
 }
 
-.quick-action {
-    border: 1px solid #3a3a3a;
-    background: #292929;
-    color: #bbb;
-    border-radius: 10px;
-    padding: 9px 12px;
-    cursor: pointer;
+.suggestion {
+    padding: 16px;
+    text-align: left;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(255,255,255,.035);
+    color: #dfe2ef;
+    transition: .2s;
+}
+
+.suggestion:hover {
+    transform: translateY(-3px);
+    border-color: rgba(124,92,255,.35);
+    background: rgba(124,92,255,.08);
+}
+
+.suggestion strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.suggestion span {
+    color: var(--muted);
     font-size: 12px;
-}
-
-.quick-action:hover {
-    background: #353535;
-    color: white;
 }
 
 /* MESSAGES */
 
 .message {
-    width: 100%;
     display: flex;
-    margin-bottom: 28px;
+    gap: 13px;
+    margin: 24px 0;
+    animation: messageIn .25s ease;
 }
 
-.message.user {
-    justify-content: flex-end;
+@keyframes messageIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.message.bot {
-    justify-content: flex-start;
+.avatar {
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 900;
+    background: rgba(255,255,255,.08);
 }
 
-.bubble {
-    max-width: 78%;
-    font-size: 15px;
-    line-height: 1.65;
+.ai .avatar {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+
+.content {
+    min-width: 0;
+    max-width: 82%;
+}
+
+.user .content {
+    margin-left: auto;
+    background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(124,92,255,.10));
+    border: 1px solid rgba(124,92,255,.20);
+    padding: 12px 15px;
+    border-radius: 16px 5px 16px 16px;
+}
+
+.ai .content {
+    padding-top: 6px;
+}
+
+.text {
     white-space: pre-wrap;
-    word-wrap: break-word;
-}
-
-.user .bubble {
-    background: #303030;
-    padding: 12px 16px;
-    border-radius: 17px;
-}
-
-.bot .bubble {
-    padding: 3px 0;
-}
-
-.ai-message {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-}
-
-.ai-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 9px;
-    background: #303030;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    line-height: 1.65;
     font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.code-block {
+    margin-top: 12px;
+    padding: 15px;
+    background: #05060a;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    overflow-x: auto;
+    position: relative;
+}
+
+.code-block code {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.copy-btn {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.06);
+    color: white;
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-size: 10px;
+}
+
+/* COMPOSER */
+
+.composer-wrap {
+    position: absolute;
+    bottom: 0;
+    left: 285px;
+    right: 0;
+    padding: 20px 20px 22px;
+    background: linear-gradient(transparent, rgba(7,8,13,.95) 35%);
+}
+
+.composer {
+    width: min(900px, 100%);
+    margin: auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 9px;
+    border-radius: 19px;
+    background: rgba(18,20,31,.88);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 20px 70px rgba(0,0,0,.45);
+    backdrop-filter: blur(20px);
+}
+
+textarea {
+    flex: 1;
+    resize: none;
+    min-height: 44px;
+    max-height: 180px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: white;
+    padding: 12px 10px;
+    line-height: 1.4;
+}
+
+textarea::placeholder {
+    color: #71778c;
+}
+
+.send {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 13px;
+    color: white;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    font-weight: 900;
+    box-shadow: 0 0 25px rgba(124,92,255,.22);
+    transition: .2s;
+}
+
+.send:hover {
+    transform: scale(1.05);
+}
+
+.send:disabled {
+    opacity: .45;
 }
 
 /* TYPING */
 
 .typing {
-    color: #888;
-    font-size: 13px;
-    padding-top: 5px;
-}
-
-.dots {
     display: inline-flex;
     gap: 4px;
-    margin-left: 5px;
+    padding: 10px 0;
 }
 
-.dots span {
-    width: 5px;
-    height: 5px;
+.typing span {
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: #888;
-    animation: blink 1.2s infinite;
+    background: #a9b0c8;
+    animation: typing 1s infinite;
 }
 
-.dots span:nth-child(2) {
-    animation-delay: .2s;
-}
+.typing span:nth-child(2) { animation-delay: .15s; }
+.typing span:nth-child(3) { animation-delay: .3s; }
 
-.dots span:nth-child(3) {
-    animation-delay: .4s;
-}
-
-@keyframes blink {
-    0%, 80%, 100% {
-        opacity: .3;
-    }
-
-    40% {
-        opacity: 1;
-    }
-}
-
-/* INPUT */
-
-.input-area {
-    position: fixed;
-    left: 255px;
-    right: 0;
-    bottom: 0;
-    padding: 18px 25px 22px;
-    background: linear-gradient(
-        to top,
-        #212121 72%,
-        rgba(33,33,33,0)
-    );
-}
-
-.input-container {
-    max-width: 850px;
-    margin: auto;
-}
-
-.input-box {
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 9px 8px 10px;
-    background: #303030;
-    border: 1px solid #454545;
-    border-radius: 18px;
-    box-shadow: 0 5px 25px rgba(0,0,0,.2);
-}
-
-#input {
-    flex: 1;
-    min-width: 0;
-    height: 42px;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: white;
-    font-size: 15px;
-    padding: 0 8px;
-}
-
-#input::placeholder {
-    color: #858585;
-}
-
-.upload {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #bbb;
-    cursor: pointer;
-    font-size: 21px;
-}
-
-.upload:hover {
-    background: #414141;
-    color: white;
-}
-
-#fileInput {
-    display: none;
-}
-
-.send-button {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    border: none;
-    background: white;
-    color: #202020;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.send-button:hover {
-    background: #ddd;
-}
-
-.send-button:active {
-    transform: scale(.94);
-}
-
-.hint {
-    text-align: center;
-    color: #686868;
-    font-size: 10px;
-    margin-top: 8px;
-}
-
-/* IMAGES */
-
-.image-preview {
-    max-width: 350px;
-    max-height: 350px;
-    border-radius: 14px;
-    display: block;
-}
-
-/* GAME */
-
-.game-card {
-    width: min(100%, 850px);
-    background: #292929;
-    border: 1px solid #3c3c3c;
-    border-radius: 15px;
-    padding: 17px;
-}
-
-.game-title {
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.game-description {
-    color: #999;
-    font-size: 13px;
-    margin-bottom: 14px;
-}
-
-.game-button {
-    border: none;
-    border-radius: 9px;
-    padding: 9px 14px;
-    margin-right: 7px;
-    background: #3a3a3a;
-    color: white;
-    cursor: pointer;
-}
-
-.game-button:hover {
-    background: #4a4a4a;
-}
-
-.game-frame {
-    width: 100%;
-    height: 500px;
-    margin-top: 15px;
-    border: 1px solid #444;
-    border-radius: 11px;
-    background: white;
-}
-
-.code-box {
-    width: 100%;
-    height: 350px;
-    margin-top: 15px;
-    padding: 13px;
-    background: #151515;
-    border: 1px solid #444;
-    border-radius: 10px;
-    color: #ddd;
-    font-family: Consolas, monospace;
-    font-size: 12px;
-    resize: vertical;
+@keyframes typing {
+    50% { transform: translateY(-4px); opacity: .45; }
 }
 
 /* MOBILE */
 
-@media (max-width: 750px) {
+.mobile-menu {
+    display: none;
+}
+
+@media (max-width: 760px) {
 
     .sidebar {
-        display: none;
+        position: fixed;
+        left: -300px;
+        top: 0;
+        transition: .25s;
+        box-shadow: 20px 0 60px rgba(0,0,0,.45);
     }
 
-    .input-area {
+    .sidebar.open {
         left: 0;
     }
 
     .mobile-menu {
         display: block;
-        margin-right: 12px;
-        background: transparent;
-        color: #aaa;
-        border: none;
-        font-size: 20px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.04);
+        color: white;
+        border-radius: 10px;
+        padding: 8px 10px;
+        margin-right: 10px;
     }
 
-    .bubble {
+    .topbar {
+        padding: 0 12px;
+    }
+
+    .composer-wrap {
+        left: 0;
+        padding: 12px;
+    }
+
+    .messages {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome {
+        min-height: 60vh;
+    }
+
+    .welcome h1 {
+        font-size: 38px;
+    }
+
+    .content {
         max-width: 90%;
     }
 }
-
 </style>
 </head>
 
@@ -539,96 +588,82 @@ body {
 
 <div class="app">
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
 
-        <div class="logo">
-            <div class="logo-icon">⚡</div>
-            <div class="logo-name">SkidGPT</div>
+        <div class="brand">
+            <div class="logo">S</div>
+            <div class="brand-text">
+                <strong>SkidGPT</strong>
+                <span>AI • Game Creator</span>
+            </div>
         </div>
 
         <button class="new-chat" onclick="newChat()">
             ＋ New Chat
         </button>
 
-        <div class="sidebar-title">
-            Chats
-        </div>
+        <div class="section-title">Recent conversations</div>
 
-        <div class="chat-history" id="chatHistory"></div>
-
-        <div class="sidebar-bottom">
-
-            <button
-                class="sidebar-button"
-                onclick="showAbout()"
-            >
-                ⚙ Settings
-            </button>
-
-        </div>
+        <div class="chat-list" id="chatList"></div>
 
     </aside>
 
     <main class="main">
 
-        <div class="topbar">
+        <header class="topbar">
 
-            <button
-                class="mobile-menu"
-                onclick="alert('Sidebar is available on desktop.')"
-            >
-                ☰
-            </button>
+            <div class="model">
+                <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
 
-            <div class="top-name">
-                SkidGPT
+                <span class="status-dot"></span>
+
+                <div>
+                    <strong>SkidGPT</strong>
+                    <span>Online</span>
+                </div>
             </div>
 
-            <div class="online">
-                ● Online
+            <div class="top-actions">
+                <button onclick="newChat()">New</button>
             </div>
 
-        </div>
+        </header>
 
-        <div id="messages">
+        <section class="messages" id="messages">
 
-            <div class="conversation" id="conversationArea">
+            <div class="messages-inner" id="messagesInner">
 
                 <div class="welcome" id="welcome">
 
-                    <div class="welcome-icon">
-                        ⚡
-                    </div>
+                    <div class="welcome-orb">S</div>
 
                     <h1>
-                        What's up?
+                        Meet <span class="gradient-text">SkidGPT</span>
                     </h1>
 
                     <p>
-                        I'm SkidGPT. Ask me anything.
+                        Your AI assistant for questions, coding, ideas,
+                        and creating complete browser games.
                     </p>
 
-                    <div class="quick-actions">
+                    <div class="cards">
 
-                        <button
-                            class="quick-action"
-                            onclick="quickMessage('Tell me a funny joke 😂')"
-                        >
-                            😂 Tell me a joke
+                        <button class="suggestion"
+                            onclick="useSuggestion('Make me a polished horror game set inside an abandoned facility.')">
+                            <strong>🎮 Create a game</strong>
+                            <span>Build a complete playable game</span>
                         </button>
 
-                        <button
-                            class="quick-action"
-                            onclick="quickMessage('Give me a cool game idea 🎮')"
-                        >
-                            🎮 Game idea
+                        <button class="suggestion"
+                            onclick="useSuggestion('Help me make my Unity game better.')">
+                            <strong>🛠️ Help with code</strong>
+                            <span>Get help with your projects</span>
                         </button>
 
-                        <button
-                            class="quick-action"
-                            onclick="quickMessage('Explain something cool to me')"
-                        >
-                            🧠 Teach me
+                        <button class="suggestion"
+                            onclick="useSuggestion('Give me 5 creative game ideas.')">
+                            <strong>💡 Brainstorm</strong>
+                            <span>Turn ideas into something awesome</span>
                         </button>
 
                     </div>
@@ -637,51 +672,24 @@ body {
 
             </div>
 
-        </div>
+        </section>
 
-        <div class="input-area">
+        <div class="composer-wrap">
 
-            <div class="input-container">
+            <form class="composer" id="chatForm">
 
-                <div class="input-box">
+                <textarea
+                    id="input"
+                    placeholder="Message SkidGPT..."
+                    rows="1"
+                    autocomplete="off"
+                ></textarea>
 
-                    <label
-                        class="upload"
-                        title="Upload file"
-                    >
+                <button class="send" id="send" type="submit">
+                    ↑
+                </button>
 
-                        +
-
-                        <input
-                            id="fileInput"
-                            type="file"
-                            multiple
-                            accept="image/*,.txt,.js,.html,.css,.cs,.json,.md,.pdf"
-                        >
-
-                    </label>
-
-                    <input
-                        id="input"
-                        type="text"
-                        placeholder="Message SkidGPT..."
-                        autocomplete="off"
-                    >
-
-                    <button
-                        class="send-button"
-                        onclick="sendMessage()"
-                    >
-                        ↑
-                    </button>
-
-                </div>
-
-                <div class="hint">
-                    SkidGPT can make mistakes. Check important information.
-                </div>
-
-            </div>
+            </form>
 
         </div>
 
@@ -690,1007 +698,458 @@ body {
 </div>
 
 <script>
-
-let chats = [];
-let currentChatId = null;
-
-const messages = document.getElementById("messages");
 const input = document.getElementById("input");
-const fileInput = document.getElementById("fileInput");
-const chatHistoryElement = document.getElementById("chatHistory");
+const form = document.getElementById("chatForm");
+const sendButton = document.getElementById("send");
+const messagesInner = document.getElementById("messagesInner");
+const chatList = document.getElementById("chatList");
+const sidebar = document.getElementById("sidebar");
 
+let conversations = JSON.parse(
+    localStorage.getItem("skidgpt_conversations") || "[]"
+);
 
-/* =========================
-   CHAT MANAGEMENT
-========================= */
+let currentConversation = null;
 
-function createChat() {
-
-    const chat = {
-        id: Date.now() + Math.random(),
-        title: "New Chat",
-        conversation: []
-    };
-
-    chats.unshift(chat);
-
-    currentChatId = chat.id;
-
-    renderChatHistory();
-
-    renderConversation();
-
-    input.focus();
-
-    return chat;
-}
-
-
-function getCurrentChat() {
-
-    return chats.find(
-        chat => chat.id === currentChatId
+function saveConversations() {
+    localStorage.setItem(
+        "skidgpt_conversations",
+        JSON.stringify(conversations)
     );
-
 }
 
-
-function getOrCreateCurrentChat() {
-
-    let chat = getCurrentChat();
-
-    if (!chat) {
-        chat = createChat();
-    }
-
-    return chat;
+function createConversation() {
+    return {
+        id: Date.now().toString(),
+        title: "New conversation",
+        preview: "No messages yet",
+        messages: [],
+        createdAt: Date.now()
+    };
 }
-
-
-function makeChatTitle(text) {
-
-    const clean = text
-        .replace(/\s+/g, " ")
-        .trim();
-
-    const lower = clean.toLowerCase();
-
-    if (
-        lower === "hello" ||
-        lower === "hi" ||
-        lower === "hey" ||
-        lower === "yo" ||
-        lower === "sup" ||
-        lower === "hello!" ||
-        lower === "hi!"
-    ) {
-
-        return "Simple conversation";
-
-    }
-
-    if (!clean) {
-        return "New Chat";
-    }
-
-    if (clean.length > 42) {
-        return clean.substring(0, 42) + "...";
-    }
-
-    return clean;
-
-}
-
-
-function updateChatTitle(chat, firstMessage) {
-
-    if (
-        chat.title === "New Chat" &&
-        chat.conversation.length === 1
-    ) {
-
-        chat.title =
-            makeChatTitle(firstMessage);
-
-        renderChatHistory();
-
-    }
-
-}
-
-
-function renderChatHistory() {
-
-    chatHistoryElement.innerHTML = "";
-
-    chats.forEach(chat => {
-
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "history-item" +
-            (
-                chat.id === currentChatId
-                    ? " active"
-                    : ""
-            );
-
-        item.textContent =
-            chat.title;
-
-        item.title =
-            chat.title;
-
-        item.onclick =
-            function() {
-
-                openChat(chat.id);
-
-            };
-
-        chatHistoryElement.appendChild(item);
-
-    });
-
-}
-
-
-function openChat(id) {
-
-    currentChatId = id;
-
-    renderChatHistory();
-
-    renderConversation();
-
-    input.focus();
-
-}
-
 
 function newChat() {
 
-    createChat();
+    if (
+        currentConversation &&
+        currentConversation.messages.length === 0
+    ) {
+        return;
+    }
 
+    currentConversation = createConversation();
+
+    conversations.unshift(currentConversation);
+
+    saveConversations();
+
+    renderChatList();
+    renderCurrentChat();
+
+    input.focus();
+
+    sidebar.classList.remove("open");
 }
 
+function loadConversation(id) {
 
-/* =========================
-   RENDER CHAT
-========================= */
+    const conversation = conversations.find(
+        chat => chat.id === id
+    );
 
-function renderConversation() {
+    if (!conversation) return;
 
-    const area =
-        document.getElementById(
-            "conversationArea"
-        );
+    currentConversation = conversation;
 
-    area.innerHTML = "";
+    renderChatList();
+    renderCurrentChat();
 
-    const chat =
-        getCurrentChat();
+    sidebar.classList.remove("open");
+}
+
+function deleteConversation(id, event) {
+
+    event.stopPropagation();
+
+    conversations = conversations.filter(
+        chat => chat.id !== id
+    );
 
     if (
-        !chat ||
-        chat.conversation.length === 0
+        currentConversation &&
+        currentConversation.id === id
     ) {
+        currentConversation = null;
+        renderCurrentChat();
+    }
 
-        showWelcome();
+    saveConversations();
+    renderChatList();
+}
+
+function generateTitle(text) {
+
+    let clean = text
+        .replace(/\s+/g, " ")
+        .trim();
+
+    if (!clean) {
+        return "New conversation";
+    }
+
+    if (clean.length > 38) {
+        clean = clean.substring(0, 38) + "...";
+    }
+
+    return clean;
+}
+
+function renderChatList() {
+
+    chatList.innerHTML = "";
+
+    conversations.forEach(conversation => {
+
+        const item = document.createElement("div");
+
+        item.className =
+            "chat-item " +
+            (
+                currentConversation &&
+                currentConversation.id === conversation.id
+                    ? "active"
+                    : ""
+            );
+
+        item.onclick = () =>
+            loadConversation(conversation.id);
+
+        const title = document.createElement("div");
+
+        title.className = "chat-title";
+        title.textContent = conversation.title;
+
+        const preview = document.createElement("div");
+
+        preview.className = "chat-preview";
+        preview.textContent = conversation.preview;
+
+        const deleteButton = document.createElement("button");
+
+        deleteButton.className = "delete-chat";
+        deleteButton.textContent = "×";
+
+        deleteButton.onclick = event =>
+            deleteConversation(conversation.id, event);
+
+        item.appendChild(title);
+        item.appendChild(preview);
+        item.appendChild(deleteButton);
+
+        chatList.appendChild(item);
+    });
+}
+
+function renderCurrentChat() {
+
+    messagesInner.innerHTML = "";
+
+    if (
+        !currentConversation ||
+        currentConversation.messages.length === 0
+    ) {
+        messagesInner.innerHTML = `
+            <div class="welcome" id="welcome">
+
+                <div class="welcome-orb">S</div>
+
+                <h1>
+                    Meet <span class="gradient-text">SkidGPT</span>
+                </h1>
+
+                <p>
+                    Your AI assistant for questions, coding, ideas,
+                    and creating complete browser games.
+                </p>
+
+                <div class="cards">
+
+                    <button class="suggestion"
+                        onclick="useSuggestion('Make me a polished horror game set inside an abandoned facility.')">
+                        <strong>🎮 Create a game</strong>
+                        <span>Build a complete playable game</span>
+                    </button>
+
+                    <button class="suggestion"
+                        onclick="useSuggestion('Help me make my Unity game better.')">
+                        <strong>🛠️ Help with code</strong>
+                        <span>Get help with your projects</span>
+                    </button>
+
+                    <button class="suggestion"
+                        onclick="useSuggestion('Give me 5 creative game ideas.')">
+                        <strong>💡 Brainstorm</strong>
+                        <span>Turn ideas into something awesome</span>
+                    </button>
+
+                </div>
+
+            </div>
+        `;
 
         return;
-
     }
 
-    chat.conversation.forEach(message => {
+    currentConversation.messages.forEach(message => {
 
-        if (message.type === "user") {
-
-            addMessageElement(
-                message.content,
-                "user"
-            );
-
-        }
-
-        else if (message.type === "bot") {
-
-            if (message.isGame) {
-
-                addGameMessageElement(
-                    message.content
-                );
-
-            }
-
-            else {
-
-                addMessageElement(
-                    message.content,
-                    "bot"
-                );
-
-            }
-
-        }
-
+        addMessageToScreen(
+            message.role,
+            message.content
+        );
     });
 
+    scrollToBottom();
 }
 
+function addMessageToScreen(role, content) {
 
-function showWelcome() {
-
-    const area =
-        document.getElementById(
-            "conversationArea"
-        );
-
-    area.innerHTML = `
-
-        <div class="welcome" id="welcome">
-
-            <div class="welcome-icon">
-                ⚡
-            </div>
-
-            <h1>
-                What's up?
-            </h1>
-
-            <p>
-                I'm SkidGPT. Ask me anything.
-            </p>
-
-            <div class="quick-actions">
-
-                <button
-                    class="quick-action"
-                    onclick="quickMessage('Tell me a funny joke 😂')"
-                >
-                    😂 Tell me a joke
-                </button>
-
-                <button
-                    class="quick-action"
-                    onclick="quickMessage('Give me a cool game idea 🎮')"
-                >
-                    🎮 Game idea
-                </button>
-
-                <button
-                    class="quick-action"
-                    onclick="quickMessage('Explain something cool to me')"
-                >
-                    🧠 Teach me
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-/* =========================
-   MESSAGE ELEMENTS
-========================= */
-
-function addMessageElement(text, type) {
-
-    const area =
-        document.getElementById(
-            "conversationArea"
-        );
-
-    const message =
-        document.createElement("div");
+    const message = document.createElement("div");
 
     message.className =
-        "message " + type;
+        "message " +
+        (role === "user" ? "user" : "ai");
 
-    if (type === "bot") {
+    const avatar = document.createElement("div");
 
-        const wrapper =
-            document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent =
+        role === "user" ? "YOU" : "S";
 
-        wrapper.className =
-            "ai-message";
+    const contentBox = document.createElement("div");
 
-        const icon =
-            document.createElement("div");
+    contentBox.className = "content";
 
-        icon.className =
-            "ai-icon";
+    const text = document.createElement("div");
 
-        icon.textContent =
-            "⚡";
+    text.className = "text";
 
-        const bubble =
-            document.createElement("div");
+    text.textContent = content;
 
-        bubble.className =
-            "bubble";
+    contentBox.appendChild(text);
 
-        bubble.textContent =
-            text;
+    message.appendChild(avatar);
+    message.appendChild(contentBox);
 
-        wrapper.appendChild(icon);
-        wrapper.appendChild(bubble);
-
-        message.appendChild(wrapper);
-
-    }
-
-    else {
-
-        const bubble =
-            document.createElement("div");
-
-        bubble.className =
-            "bubble";
-
-        bubble.textContent =
-            text;
-
-        message.appendChild(bubble);
-
-    }
-
-    area.appendChild(message);
-
+    messagesInner.appendChild(message);
 }
 
+function addTyping() {
 
-function addMessage(text, type) {
+    const message = document.createElement("div");
 
-    const area =
-        document.getElementById(
-            "conversationArea"
-        );
+    message.className = "message ai";
+    message.id = "typingMessage";
 
-    const welcome =
-        document.getElementById(
-            "welcome"
-        );
+    message.innerHTML = `
+        <div class="avatar">S</div>
 
-    if (welcome) {
-        welcome.remove();
-    }
-
-    addMessageElement(
-        text,
-        type
-    );
-
-    messages.scrollTop =
-        messages.scrollHeight;
-
-}
-
-
-/* =========================
-   GAME
-========================= */
-
-function addGameMessageElement(code) {
-
-    const area =
-        document.getElementById(
-            "conversationArea"
-        );
-
-    const message =
-        document.createElement("div");
-
-    message.className =
-        "message bot";
-
-    const gameCard =
-        document.createElement("div");
-
-    gameCard.className =
-        "game-card";
-
-    const title =
-        document.createElement("div");
-
-    title.className =
-        "game-title";
-
-    title.textContent =
-        "🎮 Game created";
-
-    gameCard.appendChild(title);
-
-    const description =
-        document.createElement("div");
-
-    description.className =
-        "game-description";
-
-    description.textContent =
-        "SkidGPT generated a playable browser game.";
-
-    gameCard.appendChild(
-        description
-    );
-
-    const playButton =
-        document.createElement("button");
-
-    playButton.className =
-        "game-button";
-
-    playButton.textContent =
-        "▶ Play Game";
-
-    playButton.onclick =
-        function() {
-
-            const existing =
-                gameCard.querySelector(
-                    ".game-frame"
-                );
-
-            if (existing) {
-
-                existing.remove();
-
-                playButton.textContent =
-                    "▶ Play Game";
-
-                return;
-
-            }
-
-            const frame =
-                document.createElement(
-                    "iframe"
-                );
-
-            frame.className =
-                "game-frame";
-
-            frame.setAttribute(
-                "sandbox",
-                "allow-scripts"
-            );
-
-            frame.srcdoc =
-                code;
-
-            gameCard.appendChild(
-                frame
-            );
-
-            playButton.textContent =
-                "Hide Game";
-
-        };
-
-    gameCard.appendChild(
-        playButton
-    );
-
-    const codeButton =
-        document.createElement("button");
-
-    codeButton.className =
-        "game-button";
-
-    codeButton.textContent =
-        "</> View Code";
-
-    codeButton.onclick =
-        function() {
-
-            const existing =
-                gameCard.querySelector(
-                    ".code-box"
-                );
-
-            if (existing) {
-
-                existing.remove();
-
-                codeButton.textContent =
-                    "</> View Code";
-
-                return;
-
-            }
-
-            const codeBox =
-                document.createElement(
-                    "textarea"
-                );
-
-            codeBox.className =
-                "code-box";
-
-            codeBox.value =
-                code;
-
-            gameCard.appendChild(
-                codeBox
-            );
-
-            codeButton.textContent =
-                "Hide Code";
-
-        };
-
-    gameCard.appendChild(
-        codeButton
-    );
-
-    message.appendChild(
-        gameCard
-    );
-
-    area.appendChild(
-        message
-    );
-
-}
-
-
-function addGameMessage(code) {
-
-    addGameMessageElement(code);
-
-    messages.scrollTop =
-        messages.scrollHeight;
-
-}
-
-
-/* =========================
-   TYPING
-========================= */
-
-function showTyping() {
-
-    const area =
-        document.getElementById(
-            "conversationArea"
-        );
-
-    const typing =
-        document.createElement("div");
-
-    typing.id =
-        "typing";
-
-    typing.className =
-        "message bot";
-
-    typing.innerHTML = `
-
-        <div class="ai-message">
-
-            <div class="ai-icon">
-                ⚡
-            </div>
+        <div class="content">
 
             <div class="typing">
-
-                SkidGPT is thinking
-
-                <span class="dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>
-
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
 
         </div>
-
     `;
 
-    area.appendChild(
-        typing
-    );
+    messagesInner.appendChild(message);
 
-    messages.scrollTop =
-        messages.scrollHeight;
-
+    scrollToBottom();
 }
-
 
 function removeTyping() {
 
     const typing =
-        document.getElementById(
-            "typing"
-        );
+        document.getElementById("typingMessage");
 
     if (typing) {
         typing.remove();
     }
-
 }
 
+async function sendMessage(text) {
 
-/* =========================
-   GAME DETECTION
-========================= */
+    text = text.trim();
 
-function looksLikeGame(code) {
+    if (!text) return;
 
-    const lower =
-        code.toLowerCase();
-
-    return (
-        lower.includes("<!doctype html>") &&
-        lower.includes("<html") &&
-        lower.includes("<script") &&
-        lower.includes("</html>")
-    );
-
-}
-
-
-/* =========================
-   SEND MESSAGE
-========================= */
-
-async function sendMessage() {
-
-    const text =
-        input.value.trim();
-
-    if (!text) {
-        return;
+    if (!currentConversation) {
+        currentConversation = createConversation();
+        conversations.unshift(currentConversation);
     }
 
-    const chat =
-        getOrCreateCurrentChat();
-
-    /*
-       The first message creates
-       the sidebar title.
-    */
-
-    const isFirstMessage =
-        chat.conversation.length === 0;
-
-    if (isFirstMessage) {
-
-        updateChatTitle(
-            chat,
-            text
-        );
-
+    if (
+        currentConversation.messages.length === 0
+    ) {
+        currentConversation.title =
+            generateTitle(text);
     }
 
-    chat.conversation.push({
-
-        type: "user",
-
+    currentConversation.messages.push({
+        role: "user",
         content: text
-
     });
 
-    addMessage(
-        text,
-        "user"
-    );
+    currentConversation.preview = text;
+
+    saveConversations();
+
+    renderChatList();
+    renderCurrentChat();
+
+    addTyping();
 
     input.value = "";
+    input.style.height = "auto";
 
-    showTyping();
+    sendButton.disabled = true;
 
     try {
 
-        const response =
-            await fetch(
-                "/chat",
-                {
+        const response = await fetch("/chat", {
 
-                    method: "POST",
+            method: "POST",
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-                    body: JSON.stringify({
+            body: JSON.stringify({
+                message: text,
+                conversation: currentConversation.messages
+            })
 
-                        message: text,
+        });
 
-                        conversation:
-                            chat.conversation
-                                .filter(
-                                    message =>
-                                        message.type === "user" ||
-                                        message.type === "bot"
-                                )
-                                .map(
-                                    message => ({
-                                        role:
-                                            message.type === "user"
-                                                ? "user"
-                                                : "assistant",
-
-                                        content:
-                                            message.content
-                                    })
-                                )
-
-                    })
-
-                }
-            );
-
-        const data =
-            await response.json();
+        const data = await response.json();
 
         removeTyping();
 
-        if (data.error) {
-
-            const errorMessage =
-                "Error: " +
-                data.error;
-
-            addMessage(
-                errorMessage,
-                "bot"
+        if (!response.ok) {
+            throw new Error(
+                data.error || "AI request failed."
             );
-
-            chat.conversation.push({
-
-                type: "bot",
-
-                content: errorMessage,
-
-                isGame: false
-
-            });
-
-            return;
-
         }
 
         const reply =
-            data.reply || "";
+            data.reply ||
+            "I didn't receive a response.";
 
-        const isGame =
-            looksLikeGame(reply);
-
-        chat.conversation.push({
-
-            type: "bot",
-
-            content: reply,
-
-            isGame: isGame
-
+        currentConversation.messages.push({
+            role: "assistant",
+            content: reply
         });
 
-        if (isGame) {
+        currentConversation.preview =
+            reply.substring(0, 70);
 
-            addGameMessage(
-                reply
-            );
+        saveConversations();
 
-        }
+        renderChatList();
+        renderCurrentChat();
 
-        else {
-
-            addMessage(
-                reply,
-                "bot"
-            );
-
-        }
-
-    }
-
-    catch (error) {
+    } catch (error) {
 
         removeTyping();
 
-        const errorMessage =
-            "I couldn't connect to SkidGPT.";
-
-        addMessage(
-            errorMessage,
-            "bot"
-        );
-
-        chat.conversation.push({
-
-            type: "bot",
-
-            content: errorMessage,
-
-            isGame: false
-
+        currentConversation.messages.push({
+            role: "assistant",
+            content:
+                "Sorry, something went wrong: " +
+                error.message
         });
 
-        console.error(
-            error
-        );
+        saveConversations();
 
+        renderCurrentChat();
+
+    } finally {
+
+        sendButton.disabled = false;
+        input.focus();
+    }
+}
+
+form.addEventListener("submit", event => {
+
+    event.preventDefault();
+
+    sendMessage(input.value);
+
+});
+
+input.addEventListener("input", () => {
+
+    input.style.height = "auto";
+
+    input.style.height =
+        Math.min(input.scrollHeight, 180) + "px";
+
+});
+
+input.addEventListener("keydown", event => {
+
+    if (
+        event.key === "Enter" &&
+        !event.shiftKey
+    ) {
+        event.preventDefault();
+
+        form.requestSubmit();
     }
 
+});
+
+function useSuggestion(text) {
+
+    input.value = text;
+
+    input.focus();
+
+    form.requestSubmit();
 }
 
+function toggleSidebar() {
 
-/* =========================
-   QUICK MESSAGE
-========================= */
-
-function quickMessage(text) {
-
-    input.value =
-        text;
-
-    sendMessage();
-
+    sidebar.classList.toggle("open");
 }
 
+function scrollToBottom() {
 
-/* =========================
-   SETTINGS
-========================= */
+    const messages =
+        document.getElementById("messages");
 
-function showAbout() {
+    setTimeout(() => {
 
-    alert(
-        "SkidGPT\n\n" +
-        "Your personal AI assistant.\n\n" +
-        "Powered locally by Ollama."
-    );
+        messages.scrollTo({
+            top: messages.scrollHeight,
+            behavior: "smooth"
+        });
 
+    }, 30);
 }
 
+renderChatList();
 
-/* =========================
-   ENTER KEY
-========================= */
+if (conversations.length > 0) {
 
-input.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.key === "Enter"
-        ) {
-
-            sendMessage();
-
-        }
-
-    }
-);
-
-
-/* =========================
-   FILE UPLOADS
-========================= */
-
-fileInput.addEventListener(
-    "change",
-    function() {
-
-        const files =
-            fileInput.files;
-
-        for (
-            const file of files
-        ) {
-
-            addMessage(
-                "Uploaded: " +
-                file.name,
-                "user"
-            );
-
-            if (
-                file.type.startsWith(
-                    "image/"
-                )
-            ) {
-
-                const reader =
-                    new FileReader();
-
-                reader.onload =
-                    function(event) {
-
-                        addImage(
-                            event.target.result
-                        );
-
-                    };
-
-                reader.readAsDataURL(
-                    file
-                );
-
-            }
-
-            else {
-
-                addMessage(
-                    "I received " +
-                    file.name +
-                    ". File reading can be connected to SkidGPT next.",
-                    "bot"
-                );
-
-            }
-
-        }
-
-    }
-);
-
-
-/* =========================
-   IMAGE
-========================= */
-
-function addImage(imageURL) {
-
-    const area =
-        document.getElementById(
-            "conversationArea"
-        );
-
-    const message =
-        document.createElement("div");
-
-    message.className =
-        "message user";
-
-    const bubble =
-        document.createElement("div");
-
-    bubble.className =
-        "bubble";
-
-    const image =
-        document.createElement("img");
-
-    image.src =
-        imageURL;
-
-    image.className =
-        "image-preview";
-
-    bubble.appendChild(
-        image
-    );
-
-    message.appendChild(
-        bubble
-    );
-
-    area.appendChild(
-        message
-    );
-
-    messages.scrollTop =
-        messages.scrollHeight;
+    currentConversation = conversations[0];
 
 }
 
-
-/* =========================
-   START
-========================= */
-
-createChat();
-
+renderCurrentChat();
 </script>
 
 </body>
