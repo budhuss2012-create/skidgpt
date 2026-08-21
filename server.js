@@ -1,3 +1,4 @@
+````js
 import express from "express";
 
 const app = express();
@@ -6,32 +7,151 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.static("."));
 
 function looksLikeGameRequest(message) {
-    return /(^|\s)(make|create|build|generate|code|design|develop|give me|i want).{0,80}(game|gameplay|platformer|shooter|horror game|rpg|racing game|clicker|pong|snake|flappy|arcade|survival game)/i.test(message)
-        || /\b(game|platformer|shooter|rpg|racing|clicker|pong|snake|flappy|arcade|survival)\b.{0,50}\b(play|create|make|build|generate)\b/i.test(message);
+    return /(^|\s)(make|create|build|generate|design|develop|give me|i want).{0,100}(game|gameplay|platformer|shooter|horror game|rpg|racing game|clicker|pong|snake|flappy|arcade|survival)/i.test(message)
+        || /\b(game|platformer|shooter|rpg|racing|clicker|pong|snake|flappy|arcade|survival)\b.{0,60}\b(play|create|make|build|generate)\b/i.test(message);
+}
+
+function cleanGameHTML(reply) {
+    return reply
+        .replace(/^```html\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/\s*```$/i, "")
+        .trim();
 }
 
 app.post("/chat", async (req, res) => {
     try {
-        const userMessage = req.body.message || "";
+        const userMessage = String(req.body.message || "");
+        const mode = req.body.mode || "chat";
+        const conversation = Array.isArray(req.body.conversation)
+            ? req.body.conversation
+            : [];
 
-        const isGame = looksLikeGameRequest(userMessage);
+        if (!userMessage.trim()) {
+            return res.status(400).json({
+                error: "Please enter a message."
+            });
+        }
+
+        const isGame = mode === "game" || looksLikeGameRequest(userMessage);
 
         let prompt;
 
         if (isGame) {
             prompt = `
-You are SkidGPT Game Creator.
+You are SkidGPT's professional browser game development AI.
 
-The user wants a playable browser game.
+The user wants you to create a COMPLETE playable browser game.
 
 USER REQUEST:
 ${userMessage}
 
-Create a polished, complete game that can run entirely inside a browser.
+CREATE A REAL GAME, NOT A DEMO.
 
-IMPORTANT:
+The game must be completely self-contained in ONE HTML file.
 
-Return ONLY a complete HTML document.
+TECHNOLOGY:
+- HTML
+- CSS
+- Vanilla JavaScript
+- Canvas when useful
+- Web Audio API when useful
+
+DO NOT require:
+- Node.js
+- npm
+- external JavaScript libraries
+- external CSS libraries
+- external images
+- external files
+- external servers
+- downloads
+
+The HTML must work immediately when opened in a modern browser.
+
+QUALITY REQUIREMENTS:
+
+Create a polished game with:
+
+- Attractive start screen
+- Clear instructions
+- Responsive gameplay
+- Smooth controls
+- Real gameplay loop
+- Score system
+- Difficulty progression
+- Collision detection
+- Win/lose conditions
+- Restart system
+- Good visual effects
+- Animations
+- Particles when appropriate
+- Screen shake when appropriate
+- Polished HUD
+- Good typography
+- Good spacing
+- Mobile support when appropriate
+- Keyboard controls
+- Mouse controls when appropriate
+- Touch controls when appropriate
+
+Make the game actually fun.
+
+GAME DESIGN:
+
+Do not make the game unnecessarily simple.
+
+Add interesting mechanics that fit the user's request.
+
+If the game is an arcade game, include:
+- Increasing difficulty
+- High score
+- Combo/reward mechanics when appropriate
+- Game-over screen
+
+If the game is a horror game, include:
+- Atmosphere
+- Lighting effects
+- Tension
+- Sound effects
+- Enemy behavior
+- A real objective
+
+If the game is a platformer, include:
+- Player physics
+- Platforms
+- Obstacles
+- Enemies
+- Level progression
+
+Use procedural graphics or Canvas drawing instead of external assets.
+
+AUDIO:
+
+If useful, create sound effects using Web Audio API.
+
+Never autoplay audio before the player interacts with the page.
+
+CODE QUALITY:
+
+Before returning the final HTML, internally check:
+
+- JavaScript syntax
+- Undefined variables
+- Undefined functions
+- Missing DOM elements
+- Broken event listeners
+- Broken buttons
+- Broken restart logic
+- Collision errors
+- Game-state errors
+- Mobile input problems
+
+Make sure the game can actually start and restart.
+
+FINAL RESPONSE:
+
+Return ONLY the complete HTML document.
 
 Start with:
 <!DOCTYPE html>
@@ -39,106 +159,36 @@ Start with:
 End with:
 </html>
 
-Do NOT use Markdown code fences.
+DO NOT use Markdown code fences.
 
-Do NOT explain the code.
+DO NOT explain anything outside the HTML.
+`;
+        } else {
+            prompt = `
+You are SkidGPT, a highly capable AI assistant.
 
-Do NOT put anything before or after the HTML.
+Answer the user's request clearly and helpfully.
 
-The game must be completely self-contained.
-
-Use:
+You are especially good at:
+- Programming
+- Game development
 - HTML
 - CSS
-- Vanilla JavaScript
-- Canvas when useful
-- Web Audio API when useful
+- JavaScript
+- Unity
+- C#
+- Debugging
+- Creative ideas
+- Explaining difficult things simply
 
-Do NOT require:
-- Node.js
-- external JavaScript libraries
-- external CSS libraries
-- external images
-- external files
-- a backend
-- downloads
+If code is requested, provide working code.
 
-The user should be able to open the HTML and immediately play.
+If the user asks for something to be written down, clearly format the exact text they can copy.
 
-GAME QUALITY:
+Use the conversation context when useful.
 
-Make it a REAL GAME, not a tiny demonstration.
-
-Include appropriate features such as:
-
-- Start screen
-- Clear controls
-- Gameplay loop
-- Score
-- Health/lives when appropriate
-- Enemies
-- Obstacles
-- Increasing difficulty
-- Collision detection
-- Win/lose conditions
-- Restart button
-- Animations
-- Particles
-- Screen effects
-- Polished UI
-- Responsive layout
-- Mobile controls when appropriate
-
-Only use features that make sense for the requested game.
-
-Make the visuals look polished and intentional.
-
-Make the game fun to actually play.
-
-IMPORTANT CODE CHECK:
-
-Before returning the HTML, internally check for:
-
-- JavaScript syntax errors
-- Undefined variables
-- Undefined functions
-- Missing elements
-- Broken buttons
-- Broken restart logic
-- Broken collision detection
-- Game states that cannot transition
-- Missing event listeners
-
-Make sure everything works.
-
-MOBILE:
-
-If appropriate, support touch controls.
-
-Prevent accidental scrolling while playing.
-
-Make the game fit phones and desktop screens.
-
-AUDIO:
-
-If useful, create simple sound effects with Web Audio API.
-
-Do not autoplay sound before user interaction.
-
-FINAL OUTPUT:
-
-ONLY the complete HTML document.
-`;
-
-        } else {
-
-            prompt = `
-You are SkidGPT, a helpful and intelligent AI assistant.
-
-Answer the user's question clearly and naturally.
-
-If the user asks about programming or game development,
-give useful practical instructions and working code when appropriate.
+CONVERSATION:
+${JSON.stringify(conversation.slice(-12))}
 
 USER:
 ${userMessage}
@@ -184,31 +234,23 @@ ${userMessage}
             "I didn't get a response.";
 
         if (isGame) {
+            reply = cleanGameHTML(reply);
 
-            reply = reply
-                .replace(/^```html\s*/i, "")
-                .replace(/^```\s*/i, "")
-                .replace(/\s*```$/i, "")
-                .trim();
-
-            res.json({
+            return res.json({
                 type: "game",
-                reply: reply
-            });
-
-        } else {
-
-            res.json({
-                type: "text",
-                reply: reply
+                reply
             });
         }
 
-    } catch (error) {
+        return res.json({
+            type: "text",
+            reply
+        });
 
+    } catch (error) {
         console.error("AI request failed:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             error: "AI request failed: " + error.message
         });
     }
@@ -219,3 +261,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`SkidGPT running on port ${PORT}`);
 });
+````
