@@ -1,18 +1,9 @@
 import express from "express";
-import OpenAI from "openai";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.static("."));
-
-const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
-
-// ================================
-// MY AI PERSONALITY
-// ================================
 
 const personality = `
 You are SkidGPT, a friendly personal AI assistant.
@@ -29,37 +20,18 @@ Your personality:
 - Never pretend you did something that you did not do.
 `;
 
-// ================================
-// CHAT
-// ================================
-
 app.post("/chat", async (req, res) => {
-
     try {
-
         const userMessage = req.body.message || "";
-
-        const conversation = Array.isArray(req.body.conversation)
-            ? req.body.conversation
-            : [];
-
-        // ================================
-        // DETECT GAME REQUESTS
-        // ================================
 
         const gameRequest =
             /make.*game|create.*game|build.*game|game.*for me|flappy|snake|pong|breakout|platformer/i.test(userMessage);
 
         let prompt;
 
-        // ================================
-        // GAME MODE
-        // ================================
-
         if (gameRequest) {
-
             prompt = `
-You are SkidGPT, a game-making AI.
+You are a game-making AI.
 
 The user wants you to create a simple playable browser game.
 
@@ -74,8 +46,7 @@ IMPORTANT:
 - Include controls.
 - Include a restart button or restart system.
 - Make sure every JavaScript function you call actually exists.
-- Make sure the HTML elements you use actually exist.
-- Put the <script> near the bottom of the HTML.
+- Make sure every HTML element you use actually exists.
 - Do not use undefined variables or functions.
 - Do not use code that depends on external files.
 - Keep the game simple enough to work reliably.
@@ -86,56 +57,68 @@ IMPORTANT:
 USER REQUEST:
 ${userMessage}
 `;
-
         } else {
-
             prompt = `
 ${personality}
 
 USER MESSAGE:
 ${userMessage}
 `;
-
         }
 
-        // ================================
-        // SEND TO OPENAI
-        // ================================
+        const response = await fetch(
+            "https://openrouter.ai/api/v1/chat/completions",
+            {
+                method: "POST",
 
-        const response = await client.responses.create({
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    "HTTP-Referer": "https://skidgpt.onrender.com",
+                    "X-Title": "SkidGPT"
+                },
 
-            model: "gpt-5.6-luna",
+                body: JSON.stringify({
+                    model: "openrouter/free",
 
-            input: prompt
+                    messages: [
+                        {
+                            role: "user",
+                            content: prompt
+                        }
+                    ]
+                })
+            }
+        );
 
-        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data?.error?.message ||
+                `OpenRouter returned ${response.status}`
+            );
+        }
+
+        const reply =
+            data?.choices?.[0]?.message?.content ||
+            "I didn't get a response.";
 
         res.json({
-            reply: response.output_text
+            reply: reply
         });
 
     } catch (error) {
-
         console.error("AI request failed:", error);
 
         res.status(500).json({
             error: "AI request failed: " + error.message
         });
-
     }
-
 });
-
-// ================================
-// START SERVER
-// ================================
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-
-    console.log(
-        `SkidGPT is running on port ${PORT}`
-    );
-
+    console.log(`SkidGPT is running on port ${PORT}`);
 });
