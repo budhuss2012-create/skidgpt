@@ -1,17 +1,21 @@
-```javascript
 import express from "express";
+import OpenAI from "openai";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.static("."));
 
+const client = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
+
 // ================================
 // MY AI PERSONALITY
 // ================================
 
 const personality = `
-You are a friendly personal AI assistant.
+You are SkidGPT, a friendly personal AI assistant.
 
 Your personality:
 - Be friendly, helpful, and easy to understand.
@@ -25,6 +29,9 @@ Your personality:
 - Never pretend you did something that you did not do.
 `;
 
+// ================================
+// CHAT
+// ================================
 
 app.post("/chat", async (req, res) => {
 
@@ -32,6 +39,9 @@ app.post("/chat", async (req, res) => {
 
         const userMessage = req.body.message || "";
 
+        const conversation = Array.isArray(req.body.conversation)
+            ? req.body.conversation
+            : [];
 
         // ================================
         // DETECT GAME REQUESTS
@@ -40,9 +50,7 @@ app.post("/chat", async (req, res) => {
         const gameRequest =
             /make.*game|create.*game|build.*game|game.*for me|flappy|snake|pong|breakout|platformer/i.test(userMessage);
 
-
         let prompt;
-
 
         // ================================
         // GAME MODE
@@ -51,7 +59,7 @@ app.post("/chat", async (req, res) => {
         if (gameRequest) {
 
             prompt = `
-You are a game-making AI.
+You are SkidGPT, a game-making AI.
 
 The user wants you to create a simple playable browser game.
 
@@ -67,7 +75,7 @@ IMPORTANT:
 - Include a restart button or restart system.
 - Make sure every JavaScript function you call actually exists.
 - Make sure the HTML elements you use actually exist.
-- Put the <script> near the bottom of the HTML so the page elements exist before JavaScript accesses them.
+- Put the <script> near the bottom of the HTML.
 - Do not use undefined variables or functions.
 - Do not use code that depends on external files.
 - Keep the game simple enough to work reliably.
@@ -79,14 +87,7 @@ USER REQUEST:
 ${userMessage}
 `;
 
-        }
-
-
-        // ================================
-        // NORMAL CHAT MODE
-        // ================================
-
-        else {
+        } else {
 
             prompt = `
 ${personality}
@@ -97,80 +98,44 @@ ${userMessage}
 
         }
 
-
         // ================================
-        // SEND TO OLLAMA
+        // SEND TO OPENAI
         // ================================
 
-        const response = await fetch(
-            "http://127.0.0.1:11434/api/chat",
-            {
-                method: "POST",
+        const response = await client.responses.create({
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+            model: "gpt-5.6-luna",
 
-                body: JSON.stringify({
+            input: prompt
 
-                    model: "qwen2.5:1.5b",
-
-                    messages: [
-                        {
-                            role: "user",
-                            content: prompt
-                        }
-                    ],
-
-                    stream: false
-
-                })
-            }
-        );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                `Ollama returned ${response.status}`
-            );
-
-        }
-
-
-        const data = await response.json();
-
-
-        res.json({
-            reply: data.message.content
         });
 
+        res.json({
+            reply: response.output_text
+        });
 
     } catch (error) {
 
-        console.error(
-            "AI request failed:",
-            error
-        );
-
+        console.error("AI request failed:", error);
 
         res.status(500).json({
-
-            error:
-                "AI request failed."
-
+            error: "AI request failed: " + error.message
         });
 
     }
 
 });
 
+// ================================
+// START SERVER
+// ================================
 
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
 
     console.log(
-        "My AI is running at http://localhost:3000"
+        `SkidGPT is running on port ${PORT}`
     );
 
 });
-```
