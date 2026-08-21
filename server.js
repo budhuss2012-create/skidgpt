@@ -2,220 +2,145 @@ import express from "express";
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(express.static("."));
 
-const personality = `
-You are SkidGPT, a friendly and capable AI assistant.
-
-Be helpful, natural, and easy to understand.
-When explaining technical things, use clear step-by-step instructions.
-Do not pretend you performed actions that you cannot actually perform.
-`;
+function looksLikeGameRequest(message) {
+    return /(^|\s)(make|create|build|generate|code|design|develop|give me|i want).{0,80}(game|gameplay|platformer|shooter|horror game|rpg|racing game|clicker|pong|snake|flappy|arcade|survival game)/i.test(message)
+        || /\b(game|platformer|shooter|rpg|racing|clicker|pong|snake|flappy|arcade|survival)\b.{0,50}\b(play|create|make|build|generate)\b/i.test(message);
+}
 
 app.post("/chat", async (req, res) => {
     try {
         const userMessage = req.body.message || "";
 
-        const gameRequest =
-            /make.*game|create.*game|build.*game|game.*for me|make me a game|create me a game|platformer|shooter|rpg|horror game|survival game|racing game|clicker|flappy|snake|pong|breakout/i.test(userMessage);
+        const isGame = looksLikeGameRequest(userMessage);
 
         let prompt;
 
-        if (gameRequest) {
+        if (isGame) {
             prompt = `
 You are SkidGPT Game Creator.
 
-The user wants you to create a COMPLETE, POLISHED, PLAYABLE browser game.
+The user wants a playable browser game.
 
 USER REQUEST:
 ${userMessage}
 
-========================
-IMPORTANT GAME RULES
-========================
+Create a polished, complete game that can run entirely inside a browser.
 
-Create the game as ONE self-contained HTML file.
+IMPORTANT:
 
-The response MUST contain ONLY the complete HTML document.
+Return ONLY a complete HTML document.
 
 Start with:
 <!DOCTYPE html>
 
-Do NOT put explanations before or after the HTML.
+End with:
+</html>
 
 Do NOT use Markdown code fences.
 
-========================
-TECHNICAL REQUIREMENTS
-========================
+Do NOT explain the code.
 
-- Use HTML, CSS, and vanilla JavaScript.
-- Put all CSS inside <style>.
-- Put all JavaScript inside <script>.
-- Do not require a backend.
-- Do not require Node.js.
-- Do not use external JavaScript libraries.
-- Do not use external CSS libraries.
-- Do not require external images.
-- Do not require external files.
-- Do not use external URLs for assets.
-- The HTML must work when saved as a single .html file and opened in a browser.
-- Use Canvas when it is useful for gameplay.
-- Make the game responsive.
-- Support desktop keyboard/mouse controls.
-- If appropriate, also add touch controls for phones.
-- Make sure the game works without an internet connection.
+Do NOT put anything before or after the HTML.
 
-========================
-GAME QUALITY
-========================
-
-Do NOT make the game a tiny demo.
-
-Build an actual playable game with:
-
-- A title screen.
-- A clear Start Game button.
-- A visible HUD.
-- Score when appropriate.
-- Health/lives when appropriate.
-- A game-over screen when appropriate.
-- Restart functionality.
-- Increasing difficulty or progression.
-- Clear player feedback.
-- Good collision detection.
-- Smooth movement.
-- Interesting gameplay.
-- Clear objectives.
-- A win condition when appropriate.
-- A lose condition when appropriate.
-
-Only add features that make sense for the requested game.
-
-========================
-VISUAL QUALITY
-========================
-
-Make the game look polished.
+The game must be completely self-contained.
 
 Use:
+- HTML
+- CSS
+- Vanilla JavaScript
+- Canvas when useful
+- Web Audio API when useful
 
-- Good spacing.
-- Clear typography.
-- Attractive UI.
-- Animations.
-- Screen effects when appropriate.
-- Particles when appropriate.
-- Shadows/glows when appropriate.
-- Background effects when appropriate.
-- Different visual states for menus, gameplay, winning, and losing.
+Do NOT require:
+- Node.js
+- external JavaScript libraries
+- external CSS libraries
+- external images
+- external files
+- a backend
+- downloads
 
-Do NOT make everything a collection of plain text boxes.
+The user should be able to open the HTML and immediately play.
 
-Create visual elements using CSS, Canvas, SVG, or JavaScript-generated graphics so the game remains self-contained.
+GAME QUALITY:
 
-========================
-GAMEPLAY
-========================
+Make it a REAL GAME, not a tiny demonstration.
 
-Before generating the code, internally design:
+Include appropriate features such as:
 
-1. The core gameplay loop.
-2. Player controls.
-3. Objectives.
-4. Enemy or obstacle behavior if needed.
-5. Collision rules.
-6. Scoring/progression.
-7. Difficulty progression.
-8. Win/lose conditions.
-9. UI.
-10. Restart behavior.
+- Start screen
+- Clear controls
+- Gameplay loop
+- Score
+- Health/lives when appropriate
+- Enemies
+- Obstacles
+- Increasing difficulty
+- Collision detection
+- Win/lose conditions
+- Restart button
+- Animations
+- Particles
+- Screen effects
+- Polished UI
+- Responsive layout
+- Mobile controls when appropriate
 
-Then implement all of them.
+Only use features that make sense for the requested game.
 
-Make sure the gameplay actually matches the user's request.
+Make the visuals look polished and intentional.
 
-========================
-CODE RELIABILITY
-========================
+Make the game fun to actually play.
 
-This is extremely important.
+IMPORTANT CODE CHECK:
 
-Before returning the HTML, internally check the code for:
+Before returning the HTML, internally check for:
 
-- Undefined variables.
-- Undefined functions.
-- Missing HTML elements.
-- Broken event listeners.
-- Incorrect IDs.
-- Syntax errors.
-- Infinite loops.
-- Incorrect collision calculations.
-- Buttons that do nothing.
-- Restart buttons that fail.
-- Game states that cannot transition.
-- JavaScript errors caused by missing elements.
-- Features that depend on unavailable files.
+- JavaScript syntax errors
+- Undefined variables
+- Undefined functions
+- Missing elements
+- Broken buttons
+- Broken restart logic
+- Broken collision detection
+- Game states that cannot transition
+- Missing event listeners
 
-Make the game robust.
+Make sure everything works.
 
-========================
-AUDIO
-========================
+MOBILE:
 
-If sound improves the game, use the Web Audio API.
+If appropriate, support touch controls.
 
-Do NOT require audio files.
+Prevent accidental scrolling while playing.
 
-Generate simple sounds programmatically.
+Make the game fit phones and desktop screens.
 
-Do not autoplay audio before the user interacts with the page.
+AUDIO:
 
-========================
-MOBILE
-========================
+If useful, create simple sound effects with Web Audio API.
 
-If the game makes sense on mobile:
+Do not autoplay sound before user interaction.
 
-- Add touch controls.
-- Make buttons large enough to tap.
-- Prevent unwanted page scrolling during gameplay.
-- Scale the game to different screen sizes.
+FINAL OUTPUT:
 
-========================
-PERFORMANCE
-========================
-
-Keep the game reasonably lightweight.
-
-Use requestAnimationFrame for real-time gameplay.
-
-Avoid unnecessarily huge amounts of code.
-
-Avoid creating thousands of DOM elements every frame.
-
-========================
-FINAL REQUIREMENT
-========================
-
-Return ONLY the complete HTML file.
-
-No explanation.
-No Markdown.
-No comments outside the HTML.
-
-The user should be able to copy your response into:
-
-game.html
-
-and immediately play it.
+ONLY the complete HTML document.
 `;
-        } else {
-            prompt = `
-${personality}
 
-USER MESSAGE:
+        } else {
+
+            prompt = `
+You are SkidGPT, a helpful and intelligent AI assistant.
+
+Answer the user's question clearly and naturally.
+
+If the user asks about programming or game development,
+give useful practical instructions and working code when appropriate.
+
+USER:
 ${userMessage}
 `;
         }
@@ -254,15 +179,33 @@ ${userMessage}
             );
         }
 
-        const reply =
+        let reply =
             data?.choices?.[0]?.message?.content ||
             "I didn't get a response.";
 
-        res.json({
-            reply: reply
-        });
+        if (isGame) {
+
+            reply = reply
+                .replace(/^```html\s*/i, "")
+                .replace(/^```\s*/i, "")
+                .replace(/\s*```$/i, "")
+                .trim();
+
+            res.json({
+                type: "game",
+                reply: reply
+            });
+
+        } else {
+
+            res.json({
+                type: "text",
+                reply: reply
+            });
+        }
 
     } catch (error) {
+
         console.error("AI request failed:", error);
 
         res.status(500).json({
@@ -274,5 +217,5 @@ ${userMessage}
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`SkidGPT is running on port ${PORT}`);
+    console.log(`SkidGPT running on port ${PORT}`);
 });
