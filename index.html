@@ -1,0 +1,1698 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SkidGPT</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background: #212121;
+    color: #ececec;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
+}
+
+.app {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 255px;
+    height: 100%;
+    background: #171717;
+    border-right: 1px solid #303030;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    flex-shrink: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.logo-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #303030;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.logo-name {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.new-chat {
+    width: 100%;
+    padding: 12px;
+    border-radius: 9px;
+    border: 1px solid #3b3b3b;
+    background: #252525;
+    color: #fff;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+}
+
+.new-chat:hover {
+    background: #303030;
+}
+
+.sidebar-title {
+    color: #777;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 25px 10px 8px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.chat-history {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.history-item {
+    padding: 10px;
+    margin-bottom: 3px;
+    border-radius: 8px;
+    color: #bdbdbd;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.history-item:hover {
+    background: #252525;
+    color: white;
+}
+
+.history-item.active {
+    background: #303030;
+    color: white;
+}
+
+.sidebar-bottom {
+    border-top: 1px solid #303030;
+    padding-top: 10px;
+}
+
+.sidebar-button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: #aaa;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.sidebar-button:hover {
+    background: #252525;
+    color: white;
+}
+
+/* MAIN */
+
+.main {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    height: 60px;
+    border-bottom: 1px solid #303030;
+    display: flex;
+    align-items: center;
+    padding: 0 22px;
+    flex-shrink: 0;
+    background: #212121;
+}
+
+.mobile-menu {
+    display: none;
+}
+
+.top-name {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.online {
+    margin-left: 10px;
+    font-size: 11px;
+    color: #65d878;
+}
+
+/* CHAT */
+
+#messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 35px 25px 150px;
+}
+
+.conversation {
+    width: 100%;
+    max-width: 850px;
+    margin: auto;
+}
+
+/* WELCOME */
+
+.welcome {
+    min-height: 65vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.welcome-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    background: #303030;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 30px rgba(0,0,0,.25);
+}
+
+.welcome h1 {
+    margin: 0;
+    font-size: 32px;
+    color: #fff;
+}
+
+.welcome p {
+    margin-top: 12px;
+    color: #888;
+    font-size: 14px;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.quick-action {
+    border: 1px solid #3a3a3a;
+    background: #292929;
+    color: #bbb;
+    border-radius: 10px;
+    padding: 9px 12px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.quick-action:hover {
+    background: #353535;
+    color: white;
+}
+
+/* MESSAGES */
+
+.message {
+    width: 100%;
+    display: flex;
+    margin-bottom: 28px;
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.message.bot {
+    justify-content: flex-start;
+}
+
+.bubble {
+    max-width: 78%;
+    font-size: 15px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.user .bubble {
+    background: #303030;
+    padding: 12px 16px;
+    border-radius: 17px;
+}
+
+.bot .bubble {
+    padding: 3px 0;
+}
+
+.ai-message {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.ai-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: #303030;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+}
+
+/* TYPING */
+
+.typing {
+    color: #888;
+    font-size: 13px;
+    padding-top: 5px;
+}
+
+.dots {
+    display: inline-flex;
+    gap: 4px;
+    margin-left: 5px;
+}
+
+.dots span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #888;
+    animation: blink 1.2s infinite;
+}
+
+.dots span:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.dots span:nth-child(3) {
+    animation-delay: .4s;
+}
+
+@keyframes blink {
+    0%, 80%, 100% {
+        opacity: .3;
+    }
+
+    40% {
+        opacity: 1;
+    }
+}
+
+/* INPUT */
+
+.input-area {
+    position: fixed;
+    left: 255px;
+    right: 0;
+    bottom: 0;
+    padding: 18px 25px 22px;
+    background: linear-gradient(
+        to top,
+        #212121 72%,
+        rgba(33,33,33,0)
+    );
+}
+
+.input-container {
+    max-width: 850px;
+    margin: auto;
+}
+
+.input-box {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 9px 8px 10px;
+    background: #303030;
+    border: 1px solid #454545;
+    border-radius: 18px;
+    box-shadow: 0 5px 25px rgba(0,0,0,.2);
+}
+
+#input {
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 15px;
+    padding: 0 8px;
+}
+
+#input::placeholder {
+    color: #858585;
+}
+
+.upload {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #bbb;
+    cursor: pointer;
+    font-size: 21px;
+}
+
+.upload:hover {
+    background: #414141;
+    color: white;
+}
+
+#fileInput {
+    display: none;
+}
+
+.send-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: none;
+    background: white;
+    color: #202020;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.send-button:hover {
+    background: #ddd;
+}
+
+.send-button:active {
+    transform: scale(.94);
+}
+
+.hint {
+    text-align: center;
+    color: #686868;
+    font-size: 10px;
+    margin-top: 8px;
+}
+
+/* IMAGES */
+
+.image-preview {
+    max-width: 350px;
+    max-height: 350px;
+    border-radius: 14px;
+    display: block;
+}
+
+/* GAME */
+
+.game-card {
+    width: min(100%, 850px);
+    background: #292929;
+    border: 1px solid #3c3c3c;
+    border-radius: 15px;
+    padding: 17px;
+}
+
+.game-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.game-description {
+    color: #999;
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+.game-button {
+    border: none;
+    border-radius: 9px;
+    padding: 9px 14px;
+    margin-right: 7px;
+    background: #3a3a3a;
+    color: white;
+    cursor: pointer;
+}
+
+.game-button:hover {
+    background: #4a4a4a;
+}
+
+.game-frame {
+    width: 100%;
+    height: 500px;
+    margin-top: 15px;
+    border: 1px solid #444;
+    border-radius: 11px;
+    background: white;
+}
+
+.code-box {
+    width: 100%;
+    height: 350px;
+    margin-top: 15px;
+    padding: 13px;
+    background: #151515;
+    border: 1px solid #444;
+    border-radius: 10px;
+    color: #ddd;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    resize: vertical;
+}
+
+/* MOBILE */
+
+@media (max-width: 750px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .input-area {
+        left: 0;
+    }
+
+    .mobile-menu {
+        display: block;
+        margin-right: 12px;
+        background: transparent;
+        color: #aaa;
+        border: none;
+        font-size: 20px;
+    }
+
+    .bubble {
+        max-width: 90%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">⚡</div>
+            <div class="logo-name">SkidGPT</div>
+        </div>
+
+        <button class="new-chat" onclick="newChat()">
+            ＋ New Chat
+        </button>
+
+        <div class="sidebar-title">
+            Chats
+        </div>
+
+        <div class="chat-history" id="chatHistory"></div>
+
+        <div class="sidebar-bottom">
+
+            <button
+                class="sidebar-button"
+                onclick="showAbout()"
+            >
+                ⚙ Settings
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <button
+                class="mobile-menu"
+                onclick="alert('Sidebar is available on desktop.')"
+            >
+                ☰
+            </button>
+
+            <div class="top-name">
+                SkidGPT
+            </div>
+
+            <div class="online">
+                ● Online
+            </div>
+
+        </div>
+
+        <div id="messages">
+
+            <div class="conversation" id="conversationArea">
+
+                <div class="welcome" id="welcome">
+
+                    <div class="welcome-icon">
+                        ⚡
+                    </div>
+
+                    <h1>
+                        What's up?
+                    </h1>
+
+                    <p>
+                        I'm SkidGPT. Ask me anything.
+                    </p>
+
+                    <div class="quick-actions">
+
+                        <button
+                            class="quick-action"
+                            onclick="quickMessage('Tell me a funny joke 😂')"
+                        >
+                            😂 Tell me a joke
+                        </button>
+
+                        <button
+                            class="quick-action"
+                            onclick="quickMessage('Give me a cool game idea 🎮')"
+                        >
+                            🎮 Game idea
+                        </button>
+
+                        <button
+                            class="quick-action"
+                            onclick="quickMessage('Explain something cool to me')"
+                        >
+                            🧠 Teach me
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="input-area">
+
+            <div class="input-container">
+
+                <div class="input-box">
+
+                    <label
+                        class="upload"
+                        title="Upload file"
+                    >
+
+                        +
+
+                        <input
+                            id="fileInput"
+                            type="file"
+                            multiple
+                            accept="image/*,.txt,.js,.html,.css,.cs,.json,.md,.pdf"
+                        >
+
+                    </label>
+
+                    <input
+                        id="input"
+                        type="text"
+                        placeholder="Message SkidGPT..."
+                        autocomplete="off"
+                    >
+
+                    <button
+                        class="send-button"
+                        onclick="sendMessage()"
+                    >
+                        ↑
+                    </button>
+
+                </div>
+
+                <div class="hint">
+                    SkidGPT can make mistakes. Check important information.
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+let chats = [];
+let currentChatId = null;
+
+const messages = document.getElementById("messages");
+const input = document.getElementById("input");
+const fileInput = document.getElementById("fileInput");
+const chatHistoryElement = document.getElementById("chatHistory");
+
+
+/* =========================
+   CHAT MANAGEMENT
+========================= */
+
+function createChat() {
+
+    const chat = {
+        id: Date.now() + Math.random(),
+        title: "New Chat",
+        conversation: []
+    };
+
+    chats.unshift(chat);
+
+    currentChatId = chat.id;
+
+    renderChatHistory();
+
+    renderConversation();
+
+    input.focus();
+
+    return chat;
+}
+
+
+function getCurrentChat() {
+
+    return chats.find(
+        chat => chat.id === currentChatId
+    );
+
+}
+
+
+function getOrCreateCurrentChat() {
+
+    let chat = getCurrentChat();
+
+    if (!chat) {
+        chat = createChat();
+    }
+
+    return chat;
+}
+
+
+function makeChatTitle(text) {
+
+    const clean = text
+        .replace(/\s+/g, " ")
+        .trim();
+
+    const lower = clean.toLowerCase();
+
+    if (
+        lower === "hello" ||
+        lower === "hi" ||
+        lower === "hey" ||
+        lower === "yo" ||
+        lower === "sup" ||
+        lower === "hello!" ||
+        lower === "hi!"
+    ) {
+
+        return "Simple conversation";
+
+    }
+
+    if (!clean) {
+        return "New Chat";
+    }
+
+    if (clean.length > 42) {
+        return clean.substring(0, 42) + "...";
+    }
+
+    return clean;
+
+}
+
+
+function updateChatTitle(chat, firstMessage) {
+
+    if (
+        chat.title === "New Chat" &&
+        chat.conversation.length === 1
+    ) {
+
+        chat.title =
+            makeChatTitle(firstMessage);
+
+        renderChatHistory();
+
+    }
+
+}
+
+
+function renderChatHistory() {
+
+    chatHistoryElement.innerHTML = "";
+
+    chats.forEach(chat => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "history-item" +
+            (
+                chat.id === currentChatId
+                    ? " active"
+                    : ""
+            );
+
+        item.textContent =
+            chat.title;
+
+        item.title =
+            chat.title;
+
+        item.onclick =
+            function() {
+
+                openChat(chat.id);
+
+            };
+
+        chatHistoryElement.appendChild(item);
+
+    });
+
+}
+
+
+function openChat(id) {
+
+    currentChatId = id;
+
+    renderChatHistory();
+
+    renderConversation();
+
+    input.focus();
+
+}
+
+
+function newChat() {
+
+    createChat();
+
+}
+
+
+/* =========================
+   RENDER CHAT
+========================= */
+
+function renderConversation() {
+
+    const area =
+        document.getElementById(
+            "conversationArea"
+        );
+
+    area.innerHTML = "";
+
+    const chat =
+        getCurrentChat();
+
+    if (
+        !chat ||
+        chat.conversation.length === 0
+    ) {
+
+        showWelcome();
+
+        return;
+
+    }
+
+    chat.conversation.forEach(message => {
+
+        if (message.type === "user") {
+
+            addMessageElement(
+                message.content,
+                "user"
+            );
+
+        }
+
+        else if (message.type === "bot") {
+
+            if (message.isGame) {
+
+                addGameMessageElement(
+                    message.content
+                );
+
+            }
+
+            else {
+
+                addMessageElement(
+                    message.content,
+                    "bot"
+                );
+
+            }
+
+        }
+
+    });
+
+}
+
+
+function showWelcome() {
+
+    const area =
+        document.getElementById(
+            "conversationArea"
+        );
+
+    area.innerHTML = `
+
+        <div class="welcome" id="welcome">
+
+            <div class="welcome-icon">
+                ⚡
+            </div>
+
+            <h1>
+                What's up?
+            </h1>
+
+            <p>
+                I'm SkidGPT. Ask me anything.
+            </p>
+
+            <div class="quick-actions">
+
+                <button
+                    class="quick-action"
+                    onclick="quickMessage('Tell me a funny joke 😂')"
+                >
+                    😂 Tell me a joke
+                </button>
+
+                <button
+                    class="quick-action"
+                    onclick="quickMessage('Give me a cool game idea 🎮')"
+                >
+                    🎮 Game idea
+                </button>
+
+                <button
+                    class="quick-action"
+                    onclick="quickMessage('Explain something cool to me')"
+                >
+                    🧠 Teach me
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================
+   MESSAGE ELEMENTS
+========================= */
+
+function addMessageElement(text, type) {
+
+    const area =
+        document.getElementById(
+            "conversationArea"
+        );
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message " + type;
+
+    if (type === "bot") {
+
+        const wrapper =
+            document.createElement("div");
+
+        wrapper.className =
+            "ai-message";
+
+        const icon =
+            document.createElement("div");
+
+        icon.className =
+            "ai-icon";
+
+        icon.textContent =
+            "⚡";
+
+        const bubble =
+            document.createElement("div");
+
+        bubble.className =
+            "bubble";
+
+        bubble.textContent =
+            text;
+
+        wrapper.appendChild(icon);
+        wrapper.appendChild(bubble);
+
+        message.appendChild(wrapper);
+
+    }
+
+    else {
+
+        const bubble =
+            document.createElement("div");
+
+        bubble.className =
+            "bubble";
+
+        bubble.textContent =
+            text;
+
+        message.appendChild(bubble);
+
+    }
+
+    area.appendChild(message);
+
+}
+
+
+function addMessage(text, type) {
+
+    const area =
+        document.getElementById(
+            "conversationArea"
+        );
+
+    const welcome =
+        document.getElementById(
+            "welcome"
+        );
+
+    if (welcome) {
+        welcome.remove();
+    }
+
+    addMessageElement(
+        text,
+        type
+    );
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+}
+
+
+/* =========================
+   GAME
+========================= */
+
+function addGameMessageElement(code) {
+
+    const area =
+        document.getElementById(
+            "conversationArea"
+        );
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message bot";
+
+    const gameCard =
+        document.createElement("div");
+
+    gameCard.className =
+        "game-card";
+
+    const title =
+        document.createElement("div");
+
+    title.className =
+        "game-title";
+
+    title.textContent =
+        "🎮 Game created";
+
+    gameCard.appendChild(title);
+
+    const description =
+        document.createElement("div");
+
+    description.className =
+        "game-description";
+
+    description.textContent =
+        "SkidGPT generated a playable browser game.";
+
+    gameCard.appendChild(
+        description
+    );
+
+    const playButton =
+        document.createElement("button");
+
+    playButton.className =
+        "game-button";
+
+    playButton.textContent =
+        "▶ Play Game";
+
+    playButton.onclick =
+        function() {
+
+            const existing =
+                gameCard.querySelector(
+                    ".game-frame"
+                );
+
+            if (existing) {
+
+                existing.remove();
+
+                playButton.textContent =
+                    "▶ Play Game";
+
+                return;
+
+            }
+
+            const frame =
+                document.createElement(
+                    "iframe"
+                );
+
+            frame.className =
+                "game-frame";
+
+            frame.setAttribute(
+                "sandbox",
+                "allow-scripts"
+            );
+
+            frame.srcdoc =
+                code;
+
+            gameCard.appendChild(
+                frame
+            );
+
+            playButton.textContent =
+                "Hide Game";
+
+        };
+
+    gameCard.appendChild(
+        playButton
+    );
+
+    const codeButton =
+        document.createElement("button");
+
+    codeButton.className =
+        "game-button";
+
+    codeButton.textContent =
+        "</> View Code";
+
+    codeButton.onclick =
+        function() {
+
+            const existing =
+                gameCard.querySelector(
+                    ".code-box"
+                );
+
+            if (existing) {
+
+                existing.remove();
+
+                codeButton.textContent =
+                    "</> View Code";
+
+                return;
+
+            }
+
+            const codeBox =
+                document.createElement(
+                    "textarea"
+                );
+
+            codeBox.className =
+                "code-box";
+
+            codeBox.value =
+                code;
+
+            gameCard.appendChild(
+                codeBox
+            );
+
+            codeButton.textContent =
+                "Hide Code";
+
+        };
+
+    gameCard.appendChild(
+        codeButton
+    );
+
+    message.appendChild(
+        gameCard
+    );
+
+    area.appendChild(
+        message
+    );
+
+}
+
+
+function addGameMessage(code) {
+
+    addGameMessageElement(code);
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+}
+
+
+/* =========================
+   TYPING
+========================= */
+
+function showTyping() {
+
+    const area =
+        document.getElementById(
+            "conversationArea"
+        );
+
+    const typing =
+        document.createElement("div");
+
+    typing.id =
+        "typing";
+
+    typing.className =
+        "message bot";
+
+    typing.innerHTML = `
+
+        <div class="ai-message">
+
+            <div class="ai-icon">
+                ⚡
+            </div>
+
+            <div class="typing">
+
+                SkidGPT is thinking
+
+                <span class="dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+
+            </div>
+
+        </div>
+
+    `;
+
+    area.appendChild(
+        typing
+    );
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+}
+
+
+function removeTyping() {
+
+    const typing =
+        document.getElementById(
+            "typing"
+        );
+
+    if (typing) {
+        typing.remove();
+    }
+
+}
+
+
+/* =========================
+   GAME DETECTION
+========================= */
+
+function looksLikeGame(code) {
+
+    const lower =
+        code.toLowerCase();
+
+    return (
+        lower.includes("<!doctype html>") &&
+        lower.includes("<html") &&
+        lower.includes("<script") &&
+        lower.includes("</html>")
+    );
+
+}
+
+
+/* =========================
+   SEND MESSAGE
+========================= */
+
+async function sendMessage() {
+
+    const text =
+        input.value.trim();
+
+    if (!text) {
+        return;
+    }
+
+    const chat =
+        getOrCreateCurrentChat();
+
+    /*
+       The first message creates
+       the sidebar title.
+    */
+
+    const isFirstMessage =
+        chat.conversation.length === 0;
+
+    if (isFirstMessage) {
+
+        updateChatTitle(
+            chat,
+            text
+        );
+
+    }
+
+    chat.conversation.push({
+
+        type: "user",
+
+        content: text
+
+    });
+
+    addMessage(
+        text,
+        "user"
+    );
+
+    input.value = "";
+
+    showTyping();
+
+    try {
+
+        const response =
+            await fetch(
+                "/chat",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        message: text,
+
+                        conversation:
+                            chat.conversation
+                                .filter(
+                                    message =>
+                                        message.type === "user" ||
+                                        message.type === "bot"
+                                )
+                                .map(
+                                    message => ({
+                                        role:
+                                            message.type === "user"
+                                                ? "user"
+                                                : "assistant",
+
+                                        content:
+                                            message.content
+                                    })
+                                )
+
+                    })
+
+                }
+            );
+
+        const data =
+            await response.json();
+
+        removeTyping();
+
+        if (data.error) {
+
+            const errorMessage =
+                "Error: " +
+                data.error;
+
+            addMessage(
+                errorMessage,
+                "bot"
+            );
+
+            chat.conversation.push({
+
+                type: "bot",
+
+                content: errorMessage,
+
+                isGame: false
+
+            });
+
+            return;
+
+        }
+
+        const reply =
+            data.reply || "";
+
+        const isGame =
+            looksLikeGame(reply);
+
+        chat.conversation.push({
+
+            type: "bot",
+
+            content: reply,
+
+            isGame: isGame
+
+        });
+
+        if (isGame) {
+
+            addGameMessage(
+                reply
+            );
+
+        }
+
+        else {
+
+            addMessage(
+                reply,
+                "bot"
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        removeTyping();
+
+        const errorMessage =
+            "I couldn't connect to SkidGPT.";
+
+        addMessage(
+            errorMessage,
+            "bot"
+        );
+
+        chat.conversation.push({
+
+            type: "bot",
+
+            content: errorMessage,
+
+            isGame: false
+
+        });
+
+        console.error(
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   QUICK MESSAGE
+========================= */
+
+function quickMessage(text) {
+
+    input.value =
+        text;
+
+    sendMessage();
+
+}
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+function showAbout() {
+
+    alert(
+        "SkidGPT\n\n" +
+        "Your personal AI assistant.\n\n" +
+        "Powered locally by Ollama."
+    );
+
+}
+
+
+/* =========================
+   ENTER KEY
+========================= */
+
+input.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   FILE UPLOADS
+========================= */
+
+fileInput.addEventListener(
+    "change",
+    function() {
+
+        const files =
+            fileInput.files;
+
+        for (
+            const file of files
+        ) {
+
+            addMessage(
+                "Uploaded: " +
+                file.name,
+                "user"
+            );
+
+            if (
+                file.type.startsWith(
+                    "image/"
+                )
+            ) {
+
+                const reader =
+                    new FileReader();
+
+                reader.onload =
+                    function(event) {
+
+                        addImage(
+                            event.target.result
+                        );
+
+                    };
+
+                reader.readAsDataURL(
+                    file
+                );
+
+            }
+
+            else {
+
+                addMessage(
+                    "I received " +
+                    file.name +
+                    ". File reading can be connected to SkidGPT next.",
+                    "bot"
+                );
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================
+   IMAGE
+========================= */
+
+function addImage(imageURL) {
+
+    const area =
+        document.getElementById(
+            "conversationArea"
+        );
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message user";
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "bubble";
+
+    const image =
+        document.createElement("img");
+
+    image.src =
+        imageURL;
+
+    image.className =
+        "image-preview";
+
+    bubble.appendChild(
+        image
+    );
+
+    message.appendChild(
+        bubble
+    );
+
+    area.appendChild(
+        message
+    );
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+createChat();
+
+</script>
+
+</body>
+</html>
+```
